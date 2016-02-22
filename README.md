@@ -1,6 +1,3 @@
-ircmagic
-========
-
-Open Source IRC processing library
-
-More to come soon.... 
+Kudi: A free open-source python library for the analysis of
+properties along reaction paths
+=======
