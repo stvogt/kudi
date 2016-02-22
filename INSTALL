@@ -1,0 +1,29 @@
+######## INSTALATIION INSTRUCTIONS FOR IRCMAGIC #############
+
+1. If it doesn't exist already, create a bin directory in your home area
+  
+  mkdir bin
+  cd bin
+
+2. within that bin directory creat a "python directory" 
+  
+  mkdir python
+  cd python
+
+3. Dowload the zip file and copy it contents into the python directory
+
+4. If you want to run gaussian on your local machine, extract the contents of
+   the script folder into your bin folder.
+
+5. Add the following lines into the .bashrc folder 
+
+   #Python path
+   export PYTHONPATH=$PYTHONPATH:/home/stvogt/bin/python
+
+   # Define paths
+   export PATH="/home/stvogt/bin:$PATH"
+
+6. Use the my_irc_magic_script.py as a reference for all the capabilities of the program.
+
+7. Enjoy
+
