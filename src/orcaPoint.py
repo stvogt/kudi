@@ -13,6 +13,9 @@ def get_property(lines, Tag, position):
 def get_energy(lines):
     return get_property(lines,"FINAL SINGLE POINT ENERGY",4) 
 
+def get_scf(lines):
+    return get_property(lines,"Total Energy       :",3) 
+
 def get_orbitals(lines, startline=0,  endstring="^\s*$"):
     orb_num  = []
     Occ_orbs = []

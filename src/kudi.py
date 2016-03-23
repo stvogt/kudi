@@ -69,6 +69,15 @@ class Path:
         force = op.neg_derivative_smooth(self.rxCoord(),self.energy()['Energy'])[1]
     return {"Reaction Coordinate":coord , "Reaction Force":force}
 
+  def force_constant(self,smooth=False):
+    if not smooth:
+        coord = op.neg_derivative(self.rxCoord(),self.force()['Reaction Force'])[0]
+        force = op.neg_derivative(self.rxCoord(),self.force()['Reaction Force'])[1]
+    if smooth:
+        coord         = op.neg_derivative_smooth(self.rxCoord(),self.force()['Reaction Force'])[0]
+        forceConstant = op.neg_derivative_smooth(self.rxCoord(),self.force()['Reaction Force'])[1]
+    return {"Reaction Coordinate":coord , "Reaction Force Constant":forceConstant}
+
   def distances(self):
     print "----Distances---"
     sigma = []
