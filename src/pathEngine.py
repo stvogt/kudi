@@ -4,6 +4,7 @@ import sys, re
 import numpy as np
 import singlePoint as sp
 import gaussianPoint as gsp
+import orcaPoint as osp
 import nbo
 
 def process_occ_energies(occ_energies):
@@ -18,10 +19,10 @@ def process_occ_energies(occ_energies):
       processed_energies.append(item)
   return processed_energies
 
-def extract_from_blocks(func,blocks):
+def extract_from_blocks(func,blocks,*argv):
     list_ = []
     for blockNum in range(0,len(blocks)):
-        prop = func(blocks[blockNum])
+        prop = func(blocks[blockNum],*argv)
         list_.append(prop)
     return list_
 
@@ -78,14 +79,27 @@ def get_blocks(lines):
 def all_symm_orbs_energ(blocks):
     occ_energ_symm = {}
     virt_energ_symm = {}
+    program_name = sp.program(blocks[0])
     for blockNum in range(0,len(blocks)):
         # Get the dictcionary with the number of orbitals and respective symmetries
-        Occ_dict_num = gsp.get_symm_orbs(blocks[blockNum])[0]
-        Virt_dict_num = gsp.get_symm_orbs(blocks[blockNum])[1]
-        #Get the orbital energies:
-        occ_energ = gsp.get_orbitals(blocks[blockNum])[0]
-        virt_energ = gsp.get_orbitals(blocks[blockNum])[1]
-        all_orbs = gsp.get_orbitals(blocks[blockNum])[2]
+        if program_name == "G09":
+            Occ_dict_num = gsp.get_symm_orbs(blocks[blockNum])[0]
+            Virt_dict_num = gsp.get_symm_orbs(blocks[blockNum])[1]
+            #Get the orbital energies:
+            occ_energ = gsp.get_orbitals(blocks[blockNum])[0]
+            virt_energ = gsp.get_orbitals(blocks[blockNum])[1]
+            all_orbs = gsp.get_orbitals(blocks[blockNum])[2]
+        elif program_name == 'Orca':
+            Occ_dict_num = osp.get_symm_orbs(blocks[blockNum])[0]
+            Virt_dict_num = osp.get_symm_orbs(blocks[blockNum])[1]
+            #Get the orbital energies:
+            occ_energ = osp.get_orbitals(blocks[blockNum])[0]
+            virt_energ = osp.get_orbitals(blocks[blockNum])[1]
+            all_orbs = osp.get_orbitals(blocks[blockNum])[2]
+        else:
+            print("Output format not supported, exiting....")
+            sys.exit(1)
+
         #In the first block initialize the symm_orbital dictcionary
         if blockNum == 0:
             for itemNum in range(1,len(occ_energ)+1):

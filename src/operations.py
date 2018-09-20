@@ -60,6 +60,14 @@ def neg_derivative(x_coord, y_coord):
   f = -np.diff(y)/np.diff(x)
   return (fx_coord[1:], f)
 
+def derivative(x_coord, y_coord):
+  fx_coord = map(float, x_coord)
+  fy_coord = map(float, y_coord)
+  x = np.array(fx_coord)
+  y = np.array(fy_coord)
+  f = np.diff(y)/np.diff(x)
+  return (fx_coord[1:], f)
+
 def neg_derivative_smooth(x_coord, y_coord):
   fx_coord = map(float, x_coord)
   fy_coord = map(float, y_coord)
@@ -150,9 +158,12 @@ def general_plot(plotname, ylabel, limit_list, interval, bullets,  works, Zeroli
   plt.rc('font', family='serif')
   for key in kwargs:
     if key == "Reaction Coordinate":
+      #x = [float(i) for i in kwargs[key]]
       x = kwargs[key]
       plt.xlabel(r'$\mathbf{\xi}$ (a$_{0}$amu$^{\frac{1}{2}}$)', fontsize = 18)
       plt.xticks(fontsize = 18)
+      #plt.xticks(np.arange(20, 57, 5), fontsize = 18)
+      #plt.xlim([12,57])
   for key in kwargs:
     if key != "Reaction Coordinate":
       plt.plot(x, kwargs[key], bullets[count], markeredgecolor="none")

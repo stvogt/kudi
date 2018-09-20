@@ -2,6 +2,7 @@ import sys,re,math
 import operations as op
 import gaussianPoint as gsp
 import orcaPoint as osp
+import numpy as np
 
 def program(lines):
   for line in lines:
@@ -32,7 +33,8 @@ def finite_diff(ip,ea):
     MU.append(mu)
   return MU
 
-def bonddistance(lines):
+
+def bonddistance(lines,dis_list):
   if program(lines) == "G09":
     xyz = gsp.get_xyz(lines)
     atomLabel = op.atom_label(xyz[0])
@@ -44,15 +46,33 @@ def bonddistance(lines):
   xCoord = xyz[1]
   yCoord = xyz[2]
   zCoord = xyz[3]
+  def distance_calc(i,j):
+      label = atomLabel[i] + str(i+1) + "-" + atomLabel[j] + str(j+1)
+      bnd_distance = math.sqrt((float(xCoord[i])-float(xCoord[j]))**2 + (float(yCoord[i])-float(yCoord[j]))**2 + (float(zCoord[i])-float(zCoord[j]))**2)
+      bondLabel.append(label)
+      bondDistance.append(bnd_distance)
+      return(bondLabel,bondDistance)
 
-  for i in range(0,len(atomLabel)-1):
-    for j in range(i,len(atomLabel)):
-      if i is not j:
-        bondLabel.append(atomLabel[i] + str(i+1) + "-" + atomLabel[j] + str(j+1))
-        bondDistance.append(math.sqrt((float(xCoord[i])-float(xCoord[j]))**2 + (float(yCoord[i])-float(yCoord[j]))**2 + (float(zCoord[i])-float(zCoord[j]))**2))
-  return(bondLabel,bondDistance)
+  if dis_list: # If list is not empty, user specified a list of bond lengthes in object definition'
+      for bl in dis_list:
+          i = int(re.split('(\d+)',bl.split("-")[0])[1])-1
+          j = int(re.split('(\d+)',bl.split("-")[1])[1])-1
+          dis_info = distance_calc(i,j)
+          lab = dis_info[0]
+          dis = dis_info[1]
+      return (lab,dis)
+  else: # If list is empty, user didn't specify a list of bond lengthes in object definition, proceedes to calculate all posible bond distances'
+      for i in range(0,len(atomLabel)):
+        for j in range(0,len(atomLabel)):
+          if i != j:
+             dis_info = distance_calc(i,j)
+             lab = dis_info[0]
+             dis = dis_info[1]
+      return (lab,dis)
 
-def angles(lines):
+
+
+def angle(lines,ang_list):
   if program(lines) == "G09":
     xyz = gsp.get_xyz(lines)
     atomLabel = op.atom_label(xyz[0])
@@ -64,36 +84,141 @@ def angles(lines):
   xCoord = xyz[1]
   yCoord = xyz[2]
   zCoord = xyz[3]
+  def angle_calc(j,i,k):
+      label = atomLabel[j] + str(j+1) + "-" + atomLabel[i] + str(i+1) + "-" + atomLabel[k] + str(k+1)
+      v_ij = np.array([float(xCoord[i]) - float(xCoord[j]),float(yCoord[i]) - float(yCoord[j]),float(zCoord[i]) - float(zCoord[j])])
+      v_ik = np.array([float(xCoord[i]) - float(xCoord[k]),float(yCoord[i]) - float(yCoord[k]),float(zCoord[i]) - float(zCoord[k])])
+      e_ij = np.divide(v_ij,np.linalg.norm(v_ij))
+      e_ik = np.divide(v_ik,np.linalg.norm(v_ik))
+      theta = 180.0/math.pi*math.acos(np.dot(e_ij,e_ik))
+      angle.append(theta)
+      angleLabel.append(label)
+      return(angleLabel,angle)
 
-  for i in range(0,len(atomLabel)-1):
-    for j in range(i, len(atomLabel)):
-      for k in range(0, len(atomLabel)):
-        if i is j:
-          continue
-        elif i is k:
-          continue
-        elif j is k:
-          continue
-        else:
-          ex_ki = float(xCoord[k]) - float(xCoord[i])
-          ex_kj = float(xCoord[k]) - float(xCoord[j])
-          ey_ki = float(yCoord[k]) - float(yCoord[i])
-          ey_kj = float(yCoord[k]) - float(yCoord[j])
-          ez_ki = float(zCoord[k]) - float(zCoord[i])
-          ez_kj = float(zCoord[k]) - float(zCoord[j])
-          rki = math.sqrt(ex_ki**2.0 + ey_ki**2.0 + ez_ki **2.0)
-          rkj = math.sqrt(ex_kj**2.0 + ey_kj**2.0 + ez_kj **2.0)
-          ex_ki = ex_ki/rki
-          ey_ki = ey_ki/rki
-          ez_ki = ez_ki/rki
-          ex_kj = ex_kj/rkj
-          ey_kj = ey_kj/rkj
-          ez_kj = ez_kj/rkj
-          angle.append(180.0/math.pi*math.acos(ex_ki*ex_kj + ey_ki*ey_kj + ez_ki*ez_kj))
-          angleLabel.append(atomLabel[i] + str(i+1) + "-" + atomLabel[k] + str(k+1) + "-" + atomLabel[j] + str(j+1))
-  return(angleLabel,angle)
+  if ang_list:
+      for bl in ang_list:
+          j = int(re.split('(\d+)',bl.split("-")[0])[1])-1
+          i = int(re.split('(\d+)',bl.split("-")[1])[1])-1
+          k = int(re.split('(\d+)',bl.split("-")[2])[1])-1
+          ang_info = angle_calc(j,i,k)
+          ang_lab = ang_info[0]
+          ang = ang_info[1]
+      return (ang_lab,ang)
+  else:
+      for i in range(0,len(atomLabel)):
+        for j in range(0, len(atomLabel)):
+          for k in range(0, len(atomLabel)):
+              if i is j:
+                  continue
+              elif  k is i:
+                  continue
+              elif k is j:
+                  continue
+              else:
+                  ang_info = angle_calc(j,i,k)
+                  ang_lab = ang_info[0]
+                  ang = ang_info[1]
+      return(ang_lab,ang)
 
+def oop_angle(lines,oop_list):
+  if program(lines) == "G09":
+    xyz = gsp.get_xyz(lines)
+    atomLabel = op.atom_label(xyz[0])
+  if program(lines) == "Orca":
+    xyz = osp.get_xyz(lines)
+    atomLabel = xyz[0]
+  oopLabel = []
+  oop = []
+  xCoord = xyz[1]
+  yCoord = xyz[2]
+  zCoord = xyz[3]
 
+  def oop_calc(i,j,k,l):
+      label = atomLabel[i] + str(i+1) + "-" + atomLabel[j] + str(j+1) + "-" + atomLabel[k] + str(k+1) + "-" + atomLabel[l] + str(l+1)
+      v_kl = np.array([float(xCoord[k]) - float(xCoord[l]),float(yCoord[k]) - float(yCoord[l]),float(zCoord[k]) - float(zCoord[l])])
+      v_ki = np.array([float(xCoord[k]) - float(xCoord[i]),float(yCoord[k]) - float(yCoord[i]),float(zCoord[k]) - float(zCoord[i])])
+      v_kj = np.array([float(xCoord[k]) - float(xCoord[j]),float(yCoord[k]) - float(yCoord[j]),float(zCoord[k]) - float(zCoord[j])])
+      e_kl = np.divide(v_kl,np.linalg.norm(v_kl))
+      e_ki = np.divide(v_ki,np.linalg.norm(v_ki))
+      e_kj = np.divide(v_kj,np.linalg.norm(v_kj))
+      theta_jkl = math.acos(np.dot(e_kj,e_kl))
+      a = np.dot(np.cross(e_kj,e_kl),e_ki)
+      b = math.sin(theta_jkl)
+      sin_theta = a/b
+      theta = (180.0/math.pi)*math.asin(round(sin_theta,5))
+      oop.append(theta)
+      oopLabel.append(label)
+      return(oopLabel,oop)
+
+  if oop_list:
+    for bl in oop_list:
+        i = int(re.split('(\d+)',bl.split("-")[0])[1])-1
+        j = int(re.split('(\d+)',bl.split("-")[1])[1])-1
+        k = int(re.split('(\d+)',bl.split("-")[2])[1])-1
+        l = int(re.split('(\d+)',bl.split("-")[3])[1])-1
+        oop_info = oop_calc(i,j,k,l)
+        oop_lab = oop_info[0]
+        oop = oop_info[1]
+    return (oop_lab,oop)
+  else:
+      for i in range(0,len(atomLabel)):
+        for j in range(0, len(atomLabel)):
+          for k in range(0, len(atomLabel)):
+            for l in range(0, len(atomLabel)):
+                if i!=j!=k!=l and k!=i!=l!=j:
+                      oop_info = oop_calc(i,j,k,l)
+                      oop_lab = oop_info[0]
+                      oop = oop_info[1]
+      return(oop_lab,oop)
+
+def dihedral(lines,dihed_list):
+  if program(lines) == "G09":
+    xyz = gsp.get_xyz(lines)
+    atomLabel = op.atom_label(xyz[0])
+  if program(lines) == "Orca":
+    xyz = osp.get_xyz(lines)
+    atomLabel = xyz[0]
+  dihedralLabel = []
+  dihedral = []
+  xCoord = xyz[1]
+  yCoord = xyz[2]
+  zCoord = xyz[3]
+  def dihedral_calc(i,j,k,l):
+      label = atomLabel[i] + str(i+1) + "-" + atomLabel[j] + str(j+1) + "-" + atomLabel[k] + str(k+1) + "-" + atomLabel[l] + str(l+1)
+      v_ij = np.array([float(xCoord[i]) - float(xCoord[j]),float(yCoord[i]) - float(yCoord[j]),float(zCoord[i]) - float(zCoord[j])])
+      v_jk = np.array([float(xCoord[j]) - float(xCoord[k]),float(yCoord[j]) - float(yCoord[k]),float(zCoord[j]) - float(zCoord[k])])
+      v_kl = np.array([float(xCoord[k]) - float(xCoord[l]),float(yCoord[k]) - float(yCoord[l]),float(zCoord[k]) - float(zCoord[l])])
+      e_ij = np.divide(v_ij,np.linalg.norm(v_ij))
+      e_jk = np.divide(v_jk,np.linalg.norm(v_jk))
+      e_kl = np.divide(v_kl,np.linalg.norm(v_kl))
+      theta_ijk = math.acos(np.dot(e_ij,e_jk))
+      theta_jkl = math.acos(np.dot(e_jk,e_kl))
+      cos_delta = (np.dot(np.cross(e_ij,e_jk),np.cross(e_jk,e_kl)))/(math.sin(theta_ijk)*math.sin(theta_jkl))
+      delta = (180.0/math.pi)*math.acos(round(cos_delta,5))
+      dihedral.append(delta)
+      dihedralLabel.append(label)
+      return(dihedralLabel,dihedral)
+
+  if dihed_list:
+     for bl in dihed_list:
+        i = int(re.split('(\d+)',bl.split("-")[0])[1])-1
+        j = int(re.split('(\d+)',bl.split("-")[1])[1])-1
+        k = int(re.split('(\d+)',bl.split("-")[2])[1])-1
+        l = int(re.split('(\d+)',bl.split("-")[3])[1])-1
+        dihedral_info = dihedral_calc(i,j,k,l)
+        dihedral_lab = dihedral_info[0]
+        dihedral = dihedral_info[1]
+     return (dihedral_lab,dihedral)
+  else:
+    for i in range(0,len(atomLabel)):
+      for j in range(0, len(atomLabel)):
+        for k in range(0, len(atomLabel)):
+          for l in range(0, len(atomLabel)):
+              if i!=j!=k!=l and k!=i!=l!=j: 
+                    dihedral_info = dihedral_calc(i,j,k,l)
+                    dihedral_lab = dihedral_info[0]
+                    dihedral = dihedral_info[1]
+    return (dihedral_lab,dihedral)
 
 def xyz_pretty_print(lines):
     if program(lines) == "G09":

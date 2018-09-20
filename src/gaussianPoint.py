@@ -59,8 +59,11 @@ def get_orbitals(lines):
   # Obtain iteration range within the output file
   All_energies = []
   for Nline in range(0,len(lines)):
-    if "The electronic state is" in lines[Nline]:
-      startline=Nline+1
+    #if "The electronic state is" in lines[Nline]:
+    if "Alpha  occ. eigenvalues" in lines[Nline]:
+      startline=Nline
+      break
+  for Nline in range(0,len(lines)):
     if "Molecular Orbital Coefficients:" in lines[Nline]:
       endline=Nline
       break
@@ -81,16 +84,17 @@ def get_orbitals(lines):
     linelist=lines[Orbline].split()
     for lineitem in range(4,len(linelist)):
       orbenergy=linelist[lineitem]
-      if "occ." in lines[Orbline]: 
+      if "occ." in lines[Orbline]:
         Occenergies_temp.append(orbenergy)
-      if "virt." in lines[Orbline]: 
+      if "virt." in lines[Orbline]:
         Virtenergies_temp.append(orbenergy)
-      Orbitalenergies_temp.append(orbenergy)	
+      Orbitalenergies_temp.append(orbenergy)
 
   Orbitalenergies=process_occ_energies(Orbitalenergies_temp)
   Virtenergies=process_occ_energies(Virtenergies_temp)
   Occenergies=process_occ_energies(Occenergies_temp)
   return (Occenergies,Virtenergies,Orbitalenergies)
+
 
 def get_symm_orbs(lines):
     for lineNum in range(0,len(lines)):

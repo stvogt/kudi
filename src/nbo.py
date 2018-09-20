@@ -57,9 +57,8 @@ def bondOrder(filelines):
           if  "Wiberg bond index, Totals by atom:" in filelines[lineNum2+3]:
             break
     for i in range(0,len(atoms)):
-      print i
       for j in range(i+1,len(bndorder[0])):
-        print atoms[i+1]+"-"+atoms[j+1]
+        #print atoms[i+1]+"-"+atoms[j+1]
         bnd_dicc[atoms[i]+"-"+atoms[j]] = bndorder[i][j]
     return bnd_dicc
 

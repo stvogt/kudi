@@ -43,7 +43,9 @@ class Path:
     if self.program() == "Orca":
         energy = pathEngine.extract_from_blocks(osp.get_energy, self.blocks)
     if relative:
-        energy[:] = [(float(x) - float(energy[0]))*627.509469 for x in energy]
+	rx = [float(i) for i in self.rxCoord()]
+        energy[:] = [(float(x) - float(energy[rx.index(min(rx))]))*627.509469 for x in energy]
+        #energy[:] = [(float(x) - float(energy[0]))*627.509469 for x in energy]
     return {"Reaction Coordinate": self.rxCoord(), "Energy":energy}
 
   def energy_mp2(self):
@@ -60,51 +62,69 @@ class Path:
     energy = pathEngine.extract_from_blocks(gsp.get_corr_energy, self.blocks)
     return {"Reaction Coordinate": self.rxCoord(), "Energy":energy}
 
-  def force(self,smooth=False):
-    if not smooth:
-        coord = op.neg_derivative(self.rxCoord(),self.energy()['Energy'])[0]
-        force = op.neg_derivative(self.rxCoord(),self.energy()['Energy'])[1]
-    if smooth:
-        coord = op.neg_derivative_smooth(self.rxCoord(),self.energy()['Energy'])[0]
-        force = op.neg_derivative_smooth(self.rxCoord(),self.energy()['Energy'])[1]
+  def force(self):
+    coord = op.neg_derivative(self.rxCoord(),self.energy()['Energy'])[0]
+    force = op.neg_derivative(self.rxCoord(),self.energy()['Energy'])[1]
     return {"Reaction Coordinate":coord , "Reaction Force":force}
 
-  def force_constant(self,smooth=False):
-    if not smooth:
-        coord = op.neg_derivative(self.rxCoord(),self.force()['Reaction Force'])[0]
-        force = op.neg_derivative(self.rxCoord(),self.force()['Reaction Force'])[1]
-    if smooth:
-        coord         = op.neg_derivative_smooth(self.rxCoord(),self.force()['Reaction Force'])[0]
-        forceConstant = op.neg_derivative_smooth(self.rxCoord(),self.force()['Reaction Force'])[1]
-    return {"Reaction Coordinate":coord , "Reaction Force Constant":forceConstant}
 
-  def distances(self):
-    print "----Distances---"
+  def distances(self,dis_list=[]):
+    print("----Distances---")
     sigma = []
     Sigma = {}
-    all_dis = pathEngine.extract_from_blocks(sp.bonddistance,self.blocks)
+    all_dis = pathEngine.extract_from_blocks(sp.bonddistance,self.blocks,dis_list)
     num_dist = len(all_dis[0][0])
     Sigma["Reaction Coordinate"] = self.rxCoord()
     for j in range(0, num_dist):
       for coord in range(0,len(all_dis)):
         sigma.append(all_dis[coord][1][j])
       Sigma[all_dis[0][0][j]] = sigma
-      print all_dis[0][0][j]
+      print all_dis[0][0][j] +"  "+ str(all_dis[0][1][j])
       sigma = []
     return Sigma
 
-  def angles(self):
+  def angles(self,ang_list=[]):
     print "----Angles---"
     sigma = []
     Sigma = {}
-    all_angles = pathEngine.extract_from_blocks(sp.angles,self.blocks)
+    all_angles = pathEngine.extract_from_blocks(sp.angle,self.blocks,ang_list)
     num_ang = len(all_angles[0][0])
     Sigma["Reaction Coordinate"] = self.rxCoord()
     for j in range(0, num_ang):
       for coord in range(0,len(all_angles)):
         sigma.append(all_angles[coord][1][j])
       Sigma[all_angles[0][0][j]] = sigma
-      print all_angles[0][0][j]
+      print all_angles[0][0][j] + "  "+ str(all_angles[0][1][j])
+      sigma = []
+    return Sigma
+
+  def oop_angles(self,oop_list=[]):
+    print "----Out-of-Plane Angle----"
+    sigma = []
+    Sigma = {}
+    all_angles = pathEngine.extract_from_blocks(sp.oop_angle,self.blocks,oop_list)
+    num_ang = len(all_angles[0][0])
+    Sigma["Reaction Coordinate"] = self.rxCoord()
+    for j in range(0, num_ang):
+      for coord in range(0,len(all_angles)):
+        sigma.append(all_angles[coord][1][j])
+      Sigma[all_angles[0][0][j]] = sigma
+      print str(all_angles[0][0][j]) + "  "+ str(all_angles[0][1][j])
+      sigma = []
+    return Sigma
+
+  def dihedrals(self,dihed_list=[]):
+    print "----Dihedral----"
+    sigma = []
+    Sigma = {}
+    all_angles = pathEngine.extract_from_blocks(sp.dihedral,self.blocks,dihed_list)
+    num_ang = len(all_angles[0][0])
+    Sigma["Reaction Coordinate"] = self.rxCoord()
+    for j in range(0, num_ang):
+      for coord in range(0,len(all_angles)):
+        sigma.append(all_angles[coord][1][j])
+      Sigma[all_angles[0][0][j]] = sigma
+      print str(all_angles[0][0][j]) + "  "+ str(all_angles[0][1][j])
       sigma = []
     return Sigma
 
@@ -116,13 +136,29 @@ class Path:
     Bndo["Reaction Coordinate"] = rx_coord
     print "----------- Bonds ----------"
     for key in bondOrder[0]:
-      print key
+      #print key
       for coord_num in range(0,len(rx_coord)):
         dicts = bondOrder[coord_num]
         bndo_list.append(dicts[key])
       Bndo[key] = bndo_list  
       bndo_list = []
     return Bndo
+
+  def bondOrderDeriv(self, bnd_list=[]):
+    if not bnd_list:
+        print "here"
+        bondOrder = self.bondOrders()
+    else: 
+        print "here here"
+        bondOrder = bnd_list
+    der_dict = {}
+    for order in bondOrder:
+      if order != "Reaction Coordinate":
+        print order
+        neg_der = op.derivative(self.rxCoord(),self.bondOrders()[order])
+        der_dict[order] = neg_der[1]
+        der_dict["Reaction Coordinate"] = neg_der[0]
+    return der_dict
 
   def natCharges(self):
     Charges = {}
@@ -183,6 +219,25 @@ class Path:
       epsilon = []
     return Epsilon
 
+  def symmetry_orbitals_occ(self):
+    if self.program() == "G09":
+        all_orbs = pathEngine.extract_from_blocks(gsp.get_symm_orbs, self.blocks)
+    if self.program() == "Orca":
+        all_orbs = pathEngine.extract_from_blocks(osp.get_symm_orbs, self.blocks)
+    val_orbs = op.num_valence_orbs(self.atoms())
+    epsilon = []
+    Epsilon = {}
+    num_orbs = len(all_orbs[0][1])
+    Epsilon["Reaction Coordinate"] = self.rxCoord()
+    end = val_orbs
+    start = 1
+    for j in range(start,end):
+      for coord in range(0,len(all_orbs)):
+        epsilon.append(all_orbs[coord][1][j])
+      Epsilon[str(j)] = epsilon
+      epsilon = []
+    return Epsilon
+
   def all_orbtitals(self):
     if self.program() == "G09":
         all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
@@ -229,11 +284,32 @@ class Path:
                 prop_dict[key]= kwargs[key]
     return prop_dict
 
+  def all_orbtitals(self):
+    if self.program() == "G09":
+        all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
+        start = 1
+    if self.program() == "Orca":
+        all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
+        start = 0
+    epsilon = []
+    Epsilon = {}
+    num_orbs = len(all_orbs[0][2])
+    Epsilon["Reaction Coordinate"] = self.rxCoord()
+    for j in range(start, num_orbs):
+      for coord in range(0,len(all_orbs)):
+        epsilon.append(all_orbs[coord][2][j])
+      Epsilon[str(j)] = epsilon
+      epsilon = []
+    return Epsilon
 
   def symm_orbitals(self):
       symm_orbs_all = pathEngine.all_symm_orbs_energ(self.blocks)[0]
-      symm_orbs_occ = gsp.get_symm_orbs(self.lines)[0]
-      symm_orbs_virt = gsp.get_symm_orbs(self.lines)[1]
+      if self.program() == "G09":
+        symm_orbs_occ = gsp.get_symm_orbs(self.lines)[0]
+        symm_orbs_virt = gsp.get_symm_orbs(self.lines)[1]
+      if self.program() == "Orca":
+        symm_orbs_occ = osp.get_symm_orbs(self.lines)[0]
+        symm_orbs_virt = osp.get_symm_orbs(self.lines)[1]
       print "\nSymmetries of occupied orbitals:"
       for key in sorted(symm_orbs_occ.iterkeys()):
           print str(key) +":  "+ symm_orbs_occ[key]
@@ -267,24 +343,11 @@ class Path:
         chemPotGen.append(mu)
     return {"Reaction Coordinate": self.rxCoord(), "Chemical Potential":chemPotGen}
 
-  def flux(self, chemPot, smooth=False):
-    if smooth:
-        coord = op.neg_derivative_smooth(self.rxCoord(),chemPot['Chemical Potential'])[0]
-        flux  = op.neg_derivative_smooth(self.rxCoord(),chemPot['Chemical Potential'])[1]
-    if not smooth:
-        coord = op.neg_derivative(self.rxCoord(),chemPot['Chemical Potential'])[0]
-        flux  = op.neg_derivative(self.rxCoord(),chemPot['Chemical Potential'])[1]
+  def flux(self, chemPot):
+    coord = op.neg_derivative(self.rxCoord(),chemPot['Chemical Potential'])[0]
+    flux  = op.neg_derivative(self.rxCoord(),chemPot['Chemical Potential'])[1]
     return {'Reaction Coordinate':coord, 'REF' : flux}
 
-  def bondOrderDeriv(self):
-    bondOrder = self.bondOrders()
-    der_dict = {}
-    for order in bondOrder:
-      if order != "Reaction Coordinate":
-        neg_der = op.neg_derivative(self.rxCoord(),bondOrder[order])
-        der_dict[order] = neg_der[1]
-        der_dict["Reaction Coordinate"] = neg_der[0]
-    return der_dict
       
   #def IP(self, outfile_cat):
   #  I = []
