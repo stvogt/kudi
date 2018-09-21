@@ -1,13 +1,13 @@
-#! /usr/bin/python
 
 import sys
-from kudi import Path
+sys.path.append('/home/stvogt/repos/kudi/kudi')
+from kudi3 import Path
 from optparse import OptionParser
 
 parser = OptionParser() 
-parser.add_option("-n", "--neutral", dest="neutral", help=" Output of the neutral molecule (default: output.log)", default = "output.log")
-parser.add_option("-c", "--cation", dest="cation", help=" Output of the cation molecule (default: output_cat.log)", default = "output_cat.log")
-parser.add_option("-a", "--anion", dest="anion", help=" Output of the anion molecule (default: output_an.log)", default = "output_an.log")
+parser.add_option("-n", "--neutral", dest="neutral", help=" Output of the neutral molecule (default: output.log)", default = "output_sp.dat")
+parser.add_option("-c", "--cation", dest="cation", help=" Output of the cation molecule (default: output_cat.log)", default = "output_cat.dat")
+parser.add_option("-a", "--anion", dest="anion", help=" Output of the anion molecule (default: output_an.log)", default = "output_an.dat")
 parser.add_option("-r", "--relative_energies", dest="rel", help="Options: True or False (default: True)", default = "True")
 
 (options, args) = parser.parse_args()
@@ -26,7 +26,7 @@ energyN = Mol_neut.energy(rel)["Energy"]
 energyC = Mol_cat.energy(rel)["Energy"]
 energyA = Mol_an.energy(rel)["Energy"]
 
-# Function for obtaiing the Ionization Potential and Electron Afinity
+#Function for obtaiing the Ionization Potential and Electron Afinity
 def IP(energyC,energyN):
     I = []
     for i in range(0,len(energyN)):
@@ -44,8 +44,9 @@ def EA(energyA,energyN):
 # Calling the function objects
 IP = IP(energyC,energyN)
 Mol_neut.save("IP.dat",**IP)
+sys.exit(1)
 EA = EA(energyA,energyN)
-Mol_neut.save("FD.dat",**EA)
+Mol_neut.save("EA.dat",**EA)
 
 # Computing the chemical potential with finite differences
 chemPot = Mol_neut.chemPotFinitDiff(IP,EA)

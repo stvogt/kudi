@@ -7,7 +7,7 @@ import numpy as np
 def program(lines):
   for line in lines:
     #if " Gaussian, Inc." in line:
-    if "Symbolic Z-matrix:" in line:
+    if ("Symbolic Z-Matrix:") or ("Symbolic Z-matrix:") in line:
         return "G09"
     #if "* O   R   C   A *" or "JOB NUMBER" in line:
     if "JOB NUMBER" in line:

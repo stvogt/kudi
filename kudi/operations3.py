@@ -113,12 +113,13 @@ def general_print(filename, **kwargs):
   f.write('\n')
   for j in range(0,iter_range):
     for key in kwargs:
-      if key == "Reaction Coordinate":
-        #f.write('%2d' % (j+1)) 
-        f.write('%2.3f,' % (round(float(kwargs[key][j]),6)))
-      if key != "Reaction Coordinate":
-        f.write('%f' % (round(float(kwargs[key][j]),6)))
+        if key == "Reaction Coordinate":
+            f.write('%2.3f,' % (round(float(kwargs[key][j]),3)))
+        if key != "Reaction Coordinate":
+            f.write('%f' % (round(float(kwargs[key][j]),6)))
     f.write('\n')
+
+
 
 def num_valence_orbs(atom_list):
   val_dict= {

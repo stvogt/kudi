@@ -29,15 +29,15 @@ def extract_from_blocks(func,blocks,*argv):
 def get_rxCoord(lines):
   rx_coord = []
   sp_orca_line = re.compile(r'Single point computation of scan coordinate\s+(-?\d+\.\d+)')
-  sp_g09_line = re.compile(r'^\s+Single Point computation for reaction coordinate:')
+  sp_g09_line = re.compile(r'^\s+Single Point computation for reaction coordinate:\s+(-?\d+\.\d+)$')
   for Nline in range(0,len(lines)):
     line = lines[Nline]
     match_g09 = re.search(sp_g09_line,line)
     if match_g09:
-       rx_coord.append(line.split()[6])
+        rx_coord.append(float(line.split()[6]))
     match_orca = re.search(sp_orca_line,line)
     if match_orca:
-       rx_coord.append(match_orca.group(1))
+        rx_coord.append(float(match_orca.group(1)))
   return rx_coord
 
 def get_blocks(lines):
@@ -46,7 +46,7 @@ def get_blocks(lines):
   blocks = []
   count = 0
   startline = False
-  g09_sp_line = re.compile(r'^\s+Single Point computation for reaction coordinate:')
+  g09_sp_line = re.compile(r'^\s+Single Point computation for reaction coordinate:\s+(-?\d+\.\d+)$')
   orca_sp_line = re.compile(r'JOB NUMBER')
   for Nline1 in range(0,len(lines)):
     line1 = lines[Nline1]
@@ -157,8 +157,8 @@ def get_all_xyz(blocks,rxc,energy,option):
   xyz_molden = ''
   for blockNum in range(0,len(blocks)):
       #rxc = get_rxCoord(blocks[blockNum])
-      header_text = "\nXYZ coordinates for reaction coordinate:  "+rxc[0] +'\n\n'
-      header_latex = "\n\\begin{center}\n   XYZ coordinates for reaction coordinate:  "+rxc[0] +'\n\end{center}\n'
+      header_text = "\nXYZ coordinates for reaction coordinate:  "+str(rxc[0]) +'\n\n'
+      header_latex = "\n\\begin{center}\n   XYZ coordinates for reaction coordinate:  "+str(rxc[0]) +'\n\end{center}\n'
       xyz = sp.xyz_pretty_print(blocks[blockNum])
       xyz_text += header_text + xyz[0]
       xyz_latex += header_latex + xyz[1]
