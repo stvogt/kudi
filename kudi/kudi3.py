@@ -7,6 +7,7 @@ import orcaPoint3 as osp
 import singlePoint3 as sp
 import operations3 as op
 import nbo3
+import numpy as np
 
 class Path:
   def __init__(self, outfile, *argv):
@@ -129,7 +130,7 @@ class Path:
   def bondOrders(self):
     Bndo = {}
     bndo_list = []
-    bondOrder = pathEngine3.extract_from_blocks(nbo.bondOrder,self.blocks)
+    bondOrder = pathEngine3.extract_from_blocks(nbo3.bondOrder,self.blocks)
     rx_coord = self.rxCoord()
     Bndo["Reaction Coordinate"] = rx_coord
     print("----------- Bonds ----------")
@@ -161,7 +162,7 @@ class Path:
   def natCharges(self):
     Charges = {}
     charges_list = []
-    charges =  pathEngine3.extract_from_blocks(nbo.natCharges,self.blocks)
+    charges =  pathEngine3.extract_from_blocks(nbo3.natCharges,self.blocks)
     rx_coord = self.rxCoord()
     Charges["Reaction Coordinate"] = rx_coord
     print("------------Charges-------------")
@@ -182,40 +183,20 @@ class Path:
         all_orbs = pathEngine3.extract_from_blocks(gsp.get_orbitals, self.blocks)
     if self.program() == "Orca":
         all_orbs = pathEngine3.extract_from_blocks(osp.get_orbitals, self.blocks)
-    #all_orbs = pathEngine3.all_orbs(self.blocks)
-    val_orbs = op.num_valence_orbs(self.atoms())
-    epsilon = []
-    Epsilon = {}
-    num_orbs = len(all_orbs[0][0])
-    Epsilon["Reaction Coordinate"] = self.rxCoord()
-    end = num_orbs
-    start = num_orbs - val_orbs
-    for j in range(start,end):
-      for coord in range(0,len(all_orbs)):
-        epsilon.append(all_orbs[coord][0][j])
-      Epsilon[str(j)] = epsilon
-      epsilon = []
-    return Epsilon
+    Epsilon = []
+    for coord in range(0,len(all_orbs)):
+        Epsilon.append(all_orbs[coord][0])
+    return np.array(Epsilon).transpose()
 
   def virt_orbitals(self):
     if self.program() == "G09":
         all_orbs = pathEngine3.extract_from_blocks(gsp.get_orbitals, self.blocks)
     if self.program() == "Orca":
         all_orbs = pathEngine3.extract_from_blocks(osp.get_orbitals, self.blocks)
-    #all_orbs = pathEngine3.all_orbs(self.blocks)
-    val_orbs = op.num_valence_orbs(self.atoms())
-    epsilon = []
-    Epsilon = {}
-    num_orbs = len(all_orbs[0][1])
-    Epsilon["Reaction Coordinate"] = self.rxCoord()
-    end = val_orbs
-    start = 1
-    for j in range(start,end):
-      for coord in range(0,len(all_orbs)):
-        epsilon.append(all_orbs[coord][1][j])
-      Epsilon[str(j)] = epsilon
-      epsilon = []
-    return Epsilon
+    Epsilon = []
+    for coord in range(0,len(all_orbs)):
+      Epsilon.append(all_orbs[coord][1])
+    return np.array(Epsilon).transpose()
 
   def symmetry_orbitals_occ(self):
     if self.program() == "G09":
@@ -282,23 +263,6 @@ class Path:
                 prop_dict[key]= kwargs[key]
     return prop_dict
 
-  def all_orbtitals(self):
-    if self.program() == "G09":
-        all_orbs = pathEngine3.extract_from_blocks(gsp.get_orbitals, self.blocks)
-        start = 1
-    if self.program() == "Orca":
-        all_orbs = pathEngine3.extract_from_blocks(osp.get_orbitals, self.blocks)
-        start = 0
-    epsilon = []
-    Epsilon = {}
-    num_orbs = len(all_orbs[0][2])
-    Epsilon["Reaction Coordinate"] = self.rxCoord()
-    for j in range(start, num_orbs):
-      for coord in range(0,len(all_orbs)):
-        epsilon.append(all_orbs[coord][2][j])
-      Epsilon[str(j)] = epsilon
-      epsilon = []
-    return Epsilon
 
   def symm_orbitals(self):
       symm_orbs_all = pathEngine3.all_symm_orbs_energ(self.blocks)[0]

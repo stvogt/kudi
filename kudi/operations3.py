@@ -104,19 +104,22 @@ def print_lists(list1,list2,list1_name,list2_name,filename):
 
 def general_print(filename, **kwargs):
   f = open(filename, 'w')
-  f.write('%s,' % ("rx_coord"))
+  f.write('{0:s},'.format("rx_coord"))
   for key in kwargs:
     if key == "Reaction Coordinate":
       iter_range = len(kwargs[key])
     if key != "Reaction Coordinate":
-      f.write('%s' % (key))
+        f.write('{0:s},'.format(key))
   f.write('\n')
   for j in range(0,iter_range):
     for key in kwargs:
         if key == "Reaction Coordinate":
-            f.write('%2.3f,' % (round(float(kwargs[key][j]),3)))
+            f.write('{0:.2f},'.format(round(float(kwargs[key][j]),3)))
+        else:
+            continue
+    for key in kwargs:
         if key != "Reaction Coordinate":
-            f.write('%f' % (round(float(kwargs[key][j]),6)))
+            f.write('{0:.6f},'.format(round(float(kwargs[key][j]),6)))
     f.write('\n')
 
 

@@ -122,7 +122,7 @@ def all_symm_orbs_energ(blocks):
 def all_bondOrbitals(blocks):
   orbs = []
   for blockNum in range(0,len(blocks)):
-    natorb = nbo.bondOrbitals(blocks[blockNum])
+    natorb = nbo3.bondOrbitals(blocks[blockNum])
     for key in natorb:
       print(key)
       print(natorb[key])
