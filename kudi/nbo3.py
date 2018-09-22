@@ -10,7 +10,7 @@ import re
 import gaussianPoint3 as gsp
 from collections import defaultdict
 
-def natCharges (filelines):
+def natCharges(filelines, atm_list):
   #atomLabel = []
   #atomNumber = []
   charges = {}
@@ -25,13 +25,15 @@ def natCharges (filelines):
   if bool:
     for lineNum in range(startline,endline):
       atomlable = filelines[lineNum].split()[0]+filelines[lineNum].split()[1] 
-      #atomLabel.append(filelines[lineNum].split()[0]+filelines[lineNum].split()[1])
       charge = filelines[lineNum].split()[2]
-      charges[atomlable] = charge
-      #charges.append(filelines[lineNum].split()[2])
+      if (atomlable in atm_list) and (atm_list):
+        charges[atomlable] = float(charge)
+      elif not atm_list:
+        charges[atomlable] = float(charge)
   return charges
 
-def bondOrder(filelines):
+
+def bondOrder(filelines, dis_list):
     endstring="^\s*$"
     bndorder = []
     numAtms = len(gsp.get_xyz(filelines)[0])
@@ -56,10 +58,16 @@ def bondOrder(filelines):
               count = 0
           if  "Wiberg bond index, Totals by atom:" in filelines[lineNum2+3]:
             break
-    for i in range(0,len(atoms)):
-      for j in range(i+1,len(bndorder[0])):
-        #print atoms[i+1]+"-"+atoms[j+1]
-        bnd_dicc[atoms[i]+"-"+atoms[j]] = bndorder[i][j]
+    if dis_list: # If list is not empty, user specified a list of bond lengthes in object definition'
+        for bl in dis_list:
+          i = int(re.split('(\d+)',bl.split("-")[0])[1])-1
+          j = int(re.split('(\d+)',bl.split("-")[1])[1])-1
+          bnd_dicc[atoms[i]+"-"+atoms[j]] = float(bndorder[i][j])
+    else: # If list is empty, user didn't specify a list of bond lengthes in object definition, proceedes to calculate all posible bond distances'
+        for i in range(0,len(atoms)):
+            for j in range(i+1,len(bndorder[0])):
+                if i != j:
+                    bnd_dicc[atoms[i]+"-"+atoms[j]] = float(bndorder[i][j])
     return bnd_dicc
 
 

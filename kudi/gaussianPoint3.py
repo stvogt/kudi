@@ -4,8 +4,8 @@ def process_occ_energies(occ_energies):
   processed_energies = []
   for item in occ_energies:
     if len(item) > 10:
-      gaussian_fuckup = item.split("-")
-      gaussian_fuckup = [_f for _f in gaussian_fuckup if _f] 
+      gaussian_fup = item.split("-")
+      gaussian_fup = [_f for _f in gaussian_fup if _f] 
       for item_stick in gaussian_fuckup:
         processed_energies.append("-"+item_stick)
     else: 
@@ -91,9 +91,12 @@ def get_orbitals(lines):
       Orbitalenergies_temp.append(orbenergy)
 
   Orbitalenergies=process_occ_energies(Orbitalenergies_temp)
+  OrbEnr = [float(x) for x in Orbitalenergies]
   Virtenergies=process_occ_energies(Virtenergies_temp)
+  VirtEnr = [float(x) for x in Virtenergies]
   Occenergies=process_occ_energies(Occenergies_temp)
-  return (Occenergies,Virtenergies,Orbitalenergies)
+  OccEnr = [float(x) for x in Occenergies]
+  return (OccEnr,VirtEnr,OrbEnr)
 
 
 def get_symm_orbs(lines):

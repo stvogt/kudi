@@ -127,15 +127,15 @@ class Path:
       sigma = []
     return Sigma
 
-  def bondOrders(self):
+  def bondOrders(self,ord_list=[]):
     Bndo = {}
     bndo_list = []
-    bondOrder = pathEngine3.extract_from_blocks(nbo3.bondOrder,self.blocks)
+    bondOrder = pathEngine3.extract_from_blocks(nbo3.bondOrder,self.blocks,ord_list)
     rx_coord = self.rxCoord()
     Bndo["Reaction Coordinate"] = rx_coord
     print("----------- Bonds ----------")
     for key in bondOrder[0]:
-      #print key
+      print(key)
       for coord_num in range(0,len(rx_coord)):
         dicts = bondOrder[coord_num]
         bndo_list.append(dicts[key])
@@ -159,10 +159,10 @@ class Path:
         der_dict["Reaction Coordinate"] = neg_der[0]
     return der_dict
 
-  def natCharges(self):
+  def natCharges(self,atm_list=[]):
     Charges = {}
     charges_list = []
-    charges =  pathEngine3.extract_from_blocks(nbo3.natCharges,self.blocks)
+    charges =  pathEngine3.extract_from_blocks(nbo3.natCharges,self.blocks,atm_list)
     rx_coord = self.rxCoord()
     Charges["Reaction Coordinate"] = rx_coord
     print("------------Charges-------------")
@@ -246,6 +246,7 @@ class Path:
     LUMO = []
     HOMO_LUMO = {}
     HOMO_LUMO["Reaction Coordinate"] = self.rxCoord()
+    print('The HOMO corresponds to orbital number: {0:d}'.format(len(all_orbs[0][0])))
     for coord in range(0,len(all_orbs)):
       HOMO.append(all_orbs[coord][0][-1])
       LUMO.append(all_orbs[coord][1][0])
@@ -344,22 +345,8 @@ class Path:
     op.general_plot(plotname, ylabel, limit_list, interval, bullets, works, zeroline, Show, **kwargs)
     os.chdir("../")
 
-  def savePlotMulti(self,plotname, ylabel, prop_list, work=False, zeroline=False, Show=False, limit_list=None, interval=None, bullets = None):
-    print("Generating the plot with the savePlotMulti...")
-    if not bullets:
-        bullets = ['bo',  'rs', 'k^', 'b-', 'm-.','bo',  'rs', 'k^', 'g-', 'm-.']
-    if not os.path.isdir("figures"):
-      os.makedirs("figures")
-    os.chdir("figures")
-    if work:
-        works = self.ReactionWorks()
-    else:
-        works = []
-    op.plot_multi(plotname, ylabel, prop_list, limit_list, interval, bullets, works, zeroline, Show)
-    os.chdir("../")
-
-  def savePlotMultiScale(self,plotname, ylabel1, ylabel2, dictos, limit_list1=None, limit_list2=None, interval1=None, interval2=None, bullets = None, work=False, zeroline=False, Show=False):
-    print("Generationg the plot with the savePlotMultiScale...")
+  def savePlotDual(self,plotname, ylabel1, ylabel2, dictos, limit_list1=None, limit_list2=None, interval1=None, interval2=None, bullets = None, work=False, zeroline=False, Show=False):
+    print("Generationg the plot with the savePlotDual...")
     if not bullets:
         bullets = ['bo',  'rs', 'k^', 'b-', 'm-.','bo',  'rs', 'k^', 'g-', 'm-.']
     if not os.path.isdir("figures"):

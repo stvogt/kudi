@@ -25,11 +25,11 @@ def get_orbitals(lines, startline=0,  endstring="^\s*$"):
         orbs_line = re.search(orbs_re, str(lines[lineNum]))
         if orbs_line:
             orb_num.append(orbs_line.group(1))
-            All_orbs.append(orbs_line.group(3))
+            All_orbs.append(float(orbs_line.group(3)))
             if orbs_line.group(2) == "2.0000":
-                Occ_orbs.append(orbs_line.group(3))
+                Occ_orbs.append(float(orbs_line.group(3)))
             if orbs_line.group(2) == "0.0000":
-                Virt_orbs.append(orbs_line.group(3))
+                Virt_orbs.append(float(orbs_line.group(3)))
                 if re.search(endstring,lines[lineNum+1]):
                     break
     return (Occ_orbs, Virt_orbs, All_orbs)
