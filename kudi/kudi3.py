@@ -311,18 +311,6 @@ class Path:
     flux  = op.neg_derivative(self.rxCoord(),chemPot['Chemical Potential'])[1]
     return {'Reaction Coordinate':coord, 'REF' : flux}
 
-      
-  #def IP(self, outfile_cat):
-  #  I = []
-  #  for enrg_item in range(0,len(cat_enrg)):
-  #      ip = float(cat_enrg[enrg_item])-float(neut_enrg[enrg_item])
-  #      I.append(ip)
-  #      ip = pathEngine3.get_IP(self.lines,cat_lines)
-  #  return {"Reaction Coordinate": self.rxCoord(), "IP":ip}
-  #  
-  #def EA(self, outfile_an):
-  #  ea = pathEngine3.get_EA(self.lines,an_lines)
-  #  return {"Reaction Coordinate": self.rxCoord(), "EA":ea}
 
   def chemPotFinitDiff(self,ip, ea):
     chemPotFD = sp.finite_diff(ip['IP'], ea['EA'])
@@ -331,7 +319,7 @@ class Path:
   def simplePlot(self,x,y):
     return op.simple_plot(x,y)
 
-  def savePlot(self,plotname, ylabel, limit_list=None, interval=None, bullets = None, work=False, zeroline=False, Show=False,  **kwargs):
+  def savePlot(self,plotname, ylabel, limit_list=[], bullets=[], yspacing=None, work=False, zeroline=False, show=False, latex=False,  **kwargs):
     print("Generating the plot with the savePlot...")
     if not bullets:
         bullets = ['bo',  'rs', 'k^', 'b-', 'm-.','bo',  'rs', 'k^', 'g-', 'm-.']
@@ -342,10 +330,10 @@ class Path:
         works = self.ReactionWorks()
     else:
         works = []
-    op.general_plot(plotname, ylabel, limit_list, interval, bullets, works, zeroline, Show, **kwargs)
+    op.general_plot(plotname, ylabel, limit_list, bullets, yspacing, works, zeroline, show, latex, **kwargs)
     os.chdir("../")
 
-  def savePlotDual(self,plotname, ylabel1, ylabel2, dictos, limit_list1=None, limit_list2=None, interval1=None, interval2=None, bullets = None, work=False, zeroline=False, Show=False):
+  def savePlotDual(self,plotname, ylabel1, ylabel2, dictos, limit_list1=[], limit_list2=[], yspacing1=None, yspacing2=None, bullets = [], work=False, zeroline=False, show=False):
     print("Generationg the plot with the savePlotDual...")
     if not bullets:
         bullets = ['bo',  'rs', 'k^', 'b-', 'm-.','bo',  'rs', 'k^', 'g-', 'm-.']
@@ -356,10 +344,10 @@ class Path:
         works = self.ReactionWorks()
     else:
         works = []
-    op.general_plot_scales(plotname, ylabel1, ylabel2, dictos, limit_list1, limit_list2, interval1, interval2, bullets, works, zeroline, Show)
+    op.general_plot_scales(plotname, ylabel1, ylabel2, dictos, limit_list1, limit_list2, yspacing1, yspacing2, bullets, works, zeroline, show)
     os.chdir("../")
 
-  def savePlotProps(self,plotname, ylabel, proplist, limit_list=None, interval=None, bullets=None, work=False, zeroline=False, Show=False, **kwargs):
+  def savePlotProps(self,plotname, ylabel, proplist, limit_list=None, yspacing=None, bullets=None, work=False, zeroline=False, show=False, **kwargs):
     print("Generating the plot with the savePlotProps...")
     if not bullets:
       bullets = ['bo',  'rs', 'k^', 'b-', 'm-.','bo',  'rs', 'k^', 'g-', 'm-.']
@@ -374,16 +362,16 @@ class Path:
         works = self.ReactionWorks()
     else:
         works = []
-    op.general_plot_props(plotname, ylabel, proplist, limit_list, interval, bullets,  works, zeroline, Show, **kwargs)
+    op.general_plot_props(plotname, ylabel, proplist, limit_list, yspacing, bullets,  works, zeroline, show, **kwargs)
     os.chdir("../")
 
-  def savePlotPropsCuts(self,plotname, ylabel, proplist, limit_list1=None, limit_list2=None, interval1=None, interval2=None, bullets=None, work = False, Show=False, **kwargs):
+  def savePlotPropsCuts(self,plotname, ylabel, proplist, limit_list1=None, limit_list2=None, yspacing1=None, yspacing2=None, bullets=None, work = False, show=False, **kwargs):
     print("Generating the plot with the savePlotPropsCuts ")
     if not bullets:
       bullets = ['bo',  'rs', 'k^', 'b-', 'm-.','bo',  'rs', 'k^', 'g-', 'm-.']
     if not limit_list1 and limit_list2:
-        #print colored("You need to specify the limits for both intervals, e.g.:\nMol.savePlotPropsCuts('test.svg','Occ. Orbs.',['53','54'],limit_list1=[-0.3,-0.2],limit_list2=[-0.1,0.0], **all_orbitals) ",'red')
-        print("You need to specify the limits for both intervals, e.g.:\nMol.savePlotPropsCuts('test.svg','Occ. Orbs.',['53','54'],limit_list1=[-0.3,-0.2],limit_list2=[-0.1,0.0], **all_orbitals) ")
+        #print colored("You need to specify the limits for both yspacings, e.g.:\nMol.savePlotPropsCuts('test.svg','Occ. Orbs.',['53','54'],limit_list1=[-0.3,-0.2],limit_list2=[-0.1,0.0], **all_orbitals) ",'red')
+        print("You need to specify the limits for both yspacings, e.g.:\nMol.savePlotPropsCuts('test.svg','Occ. Orbs.',['53','54'],limit_list1=[-0.3,-0.2],limit_list2=[-0.1,0.0], **all_orbitals) ")
         sys.exit(2)
     if not os.path.isdir("figures"):
       os.makedirs("figures")
@@ -392,7 +380,7 @@ class Path:
         works = self.ReactionWorks()
     else:
         works = []
-    op.general_plot_prop_with_cuts(plotname, ylabel, proplist, limit_list1, limit_list2, interval1, interval2, bullets,  works, Show, **kwargs)
+    op.general_plot_prop_with_cuts(plotname, ylabel, proplist, limit_list1, limit_list2, yspacing1, yspacing2, bullets,  works, show, **kwargs)
     os.chdir("../")
 
   def save(self, filename, prop_list=None,  **kwargs):

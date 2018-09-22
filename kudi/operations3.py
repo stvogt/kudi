@@ -153,24 +153,21 @@ def num_valence_orbs(atom_list):
   val_orbs = val_elec/2
   return val_orbs
 
-def general_plot(plotname, ylabel, limit_list, interval, bullets,  works, Zeroline, Show=False, **kwargs):
+def general_plot(plotname, ylabel, limit_list,  bullets, yspacing,   works, zeroline, show, latex, **kwargs):
   count = 0
-  #plt.rc('text', usetex=True)
+  if latex:
+    plt.rc('text', usetex=True)
   plt.rc('font', family='serif')
   for key in kwargs:
     if key == "Reaction Coordinate":
-      #x = [float(i) for i in kwargs[key]]
-      #print(x)
       x = kwargs[key]
       plt.xlabel(r'$\mathbf{\xi}$ (a$_{0}$amu$^{\frac{1}{2}}$)', fontsize = 18)
       plt.xticks(fontsize = 18)
-      #plt.xticks(np.arange(-5,5,step=1.0), fontsize = 18)
-      #plt.xlim([12,57])
   for key in kwargs:
     if key != "Reaction Coordinate":
       plt.plot(x, kwargs[key], bullets[count], markeredgecolor="none")
       count = count + 1
-  if Zeroline:
+  if zeroline:
     plt.axhline(y=0, color = 'red')
   if works:
     plt.axvline(x=works[4], color = 'black', linestyle = "dashed" )
@@ -178,21 +175,21 @@ def general_plot(plotname, ylabel, limit_list, interval, bullets,  works, Zeroli
   if not limit_list:
     plt.yticks(fontsize = 18)
   if limit_list:
-    if not interval:
-      interval=(max(limit_list)-min(limit_list))/5
-    plt.yticks(np.arange(min(limit_list), max(limit_list), interval), fontsize = 18)
+    if not yspacing:
+      yspacing=(max(limit_list)-min(limit_list))/5
+    plt.yticks(np.arange(min(limit_list), max(limit_list), yspacing), fontsize = 18)
+    #axes.set_ylim(limit_list)
   plt.ylabel(ylabel, fontsize = 22)
   axes = plt.gca()
-  axes.set_ylim(limit_list)
   print('Saving the plot in ./figures as '+plotname)
   print('----------------------------------------------------------')
   plt.savefig(plotname)
-  if Show:
+  if show:
     plt.show()
   plt.clf()
 
 
-def general_plot_props(plotname, ylabel, proplist, limit_list ,interval, bullets, works, Zeroline, Show=False, **kwargs):
+def general_plot_props(plotname, ylabel, proplist, limit_list ,yspacing, bullets, works, zeroline, show=False, **kwargs):
   count = 0
   #plt.rc('text', usetex=True)
   plt.rc('font', family='serif')
@@ -205,7 +202,7 @@ def general_plot_props(plotname, ylabel, proplist, limit_list ,interval, bullets
     if key != "Reaction Coordinate":
       plt.plot(x, kwargs[key], bullets[count], label=key, markeredgecolor="none")
       count = count + 1
-  if Zeroline:
+  if zeroline:
     plt.axhline(y=0, color = 'red')
   if works:
     plt.axvline(x=works[4], color = 'black', linestyle = "dashed" )
@@ -213,9 +210,9 @@ def general_plot_props(plotname, ylabel, proplist, limit_list ,interval, bullets
   if not limit_list:
     plt.yticks(fontsize = 18)
   if limit_list:
-    if not interval:
-      interval=(max(limit_list)-min(limit_list))/5
-    plt.yticks(np.arange(min(limit_list), max(limit_list), interval), fontsize = 18)
+    if not yspacing:
+      yspacing=(max(limit_list)-min(limit_list))/5
+    plt.yticks(np.arange(min(limit_list), max(limit_list), yspacing), fontsize = 18)
 
   plt.ylabel(ylabel, fontsize = 22)
   plt.legend(loc=0, bbox_to_anchor=(1.05, 1)) # Not sure why this is not working
@@ -224,11 +221,11 @@ def general_plot_props(plotname, ylabel, proplist, limit_list ,interval, bullets
   print('Saving the plot in ./figures as '+plotname)
   print('----------------------------------------------------------')
   plt.savefig(plotname)
-  if Show:
+  if show:
     plt.show()
   plt.clf()
 
-def plot_multi(plotname, ylabel, prop_list, limit_list, interval, bullets, works, Zeroline, Show=False):
+def plot_multi(plotname, ylabel, prop_list, limit_list, yspacing, bullets, works, zeroline, show=False):
   keys = []
   count = 0
   #plt.rc('text', usetex=True)
@@ -244,7 +241,7 @@ def plot_multi(plotname, ylabel, prop_list, limit_list, interval, bullets, works
           y = (dicto[key])
           count = count + 1
           plt.plot(x, y, bullets[count], label = key, markeredgecolor='none')
-  if Zeroline:
+  if zeroline:
     plt.axhline(y=0, color = 'red')
   if works:
     plt.axvline(x=works[4], color = 'black', linestyle = "dashed" )
@@ -252,9 +249,9 @@ def plot_multi(plotname, ylabel, prop_list, limit_list, interval, bullets, works
   if not limit_list:
     plt.yticks(fontsize = 18)
   if limit_list:
-    if not interval:
-      interval=(max(limit_list)-min(limit_list))/5
-    plt.yticks(np.arange(min(limit_list), max(limit_list), interval), fontsize = 18)
+    if not yspacing:
+      yspacing=(max(limit_list)-min(limit_list))/5
+    plt.yticks(np.arange(min(limit_list), max(limit_list), yspacing), fontsize = 18)
   plt.ylabel(ylabel, fontsize = 22)
   axes = plt.gca()
   axes.set_ylim(limit_list)
@@ -262,21 +259,21 @@ def plot_multi(plotname, ylabel, prop_list, limit_list, interval, bullets, works
   print('Saving the plot in ./figures as '+plotname)
   print('----------------------------------------------------------')
   plt.savefig(plotname)
-  if Show:
+  if show:
     plt.show()
   plt.clf()
 
-def general_plot_prop_with_cuts(plotname, ylabel, proplist, limit_list1, limit_list2, interval1, interval2, bullets, works, Show=False, **kwargs):
+def general_plot_prop_with_cuts(plotname, ylabel, proplist, limit_list1, limit_list2, yspacing1, yspacing2, bullets, works, show=False, **kwargs):
   # ONLY WORKS FOR TWO DIFFERENT PORPERTIES!!!
   count = 0
   #plt.rc('text', usetex=True)
   plt.rc('font', family='serif')
   f,axarr = plt.subplots(2,1,sharex=True)
   count = 0
-  if not interval1:
-    interval1=(max(limit_list1)-min(limit_list1))/4
-  if not interval2:
-    interval2=(max(limit_list2)-min(limit_list2))/4
+  if not yspacing1:
+    yspacing1=(max(limit_list1)-min(limit_list1))/4
+  if not yspacing2:
+    yspacing2=(max(limit_list2)-min(limit_list2))/4
   for key in kwargs:
     if key == "Reaction Coordinate":
       x = kwargs[key]
@@ -294,9 +291,9 @@ def general_plot_prop_with_cuts(plotname, ylabel, proplist, limit_list1, limit_l
     axarr[1].axvline(x=works[5], color = 'black', linestyle = "dashed")
   plt.ylabel(ylabel, fontsize = 22)
   axarr[0].set_ylim(limit_list1[0],limit_list1[1]) # outliers only
-  axarr[0].yaxis.set_ticks(np.arange(min(limit_list1), max(limit_list1), interval1))
+  axarr[0].yaxis.set_ticks(np.arange(min(limit_list1), max(limit_list1), yspacing1))
   axarr[1].set_ylim(limit_list2[0],limit_list2[1]) # most of the data
-  axarr[1].yaxis.set_ticks(np.arange(min(limit_list2), max(limit_list2), interval2))
+  axarr[1].yaxis.set_ticks(np.arange(min(limit_list2), max(limit_list2), yspacing2))
 
   axarr[0].spines['bottom'].set_visible(False)
   axarr[1].spines['top'].set_visible(False)
@@ -318,11 +315,11 @@ def general_plot_prop_with_cuts(plotname, ylabel, proplist, limit_list1, limit_l
   print('Saving the plot in ./figures as '+plotname)
   print('----------------------------------------------------------')
   plt.savefig(plotname)
-  if Show:
+  if show:
     plt.show()
   plt.clf()
 
-def general_plot_scales(plotname, ylabel1, ylabel2, dictos, proplist, limit_list1, limit_list2, interval1, interval2, works, zeroline, Show=False ):
+def general_plot_scales(plotname, ylabel1, ylabel2, dictos, proplist, limit_list1, limit_list2, yspacing1, yspacing2, works, zeroline, show=False ):
   # ONLY WORKS FOR TWO DIFFERENT PORPERTIES!!!
   print('Generating the plot....')
   bullets = ['bo',  'rs', 'k^', 'b-', 'm-.','bo',  'rs', 'k^', 'g-', 'm-.']
@@ -363,7 +360,7 @@ def general_plot_scales(plotname, ylabel1, ylabel2, dictos, proplist, limit_list
   print('Saving the plot in ./figures as '+plotname)
   print('----------------------------------------------------------')
   plt.savefig(plotname)
-  if Show:
+  if show:
     plt.show()
   plt.clf()
 
