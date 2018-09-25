@@ -1,3 +1,3 @@
 Kudi: A free open-source python library for the analysis of properties along reaction paths
 =======
-![KUDI](./KudiLogo.pdf)
+ <img src="./KudiLogo.pdf" alt="Italian Trulli">
