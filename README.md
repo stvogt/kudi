@@ -31,8 +31,8 @@ a kudi pre-processing script.
 
 1. From an existing IRC or relaxed scan output file.
 
-Use the make_sp script  to create the input_sp.dat file that can be run with the electronic structure package (e.g. Orca or 
-Gaussian). To list the different options run (python make_sp_g09.py -h). This will create an input file that that contains
+Use the **make_sp** script  to create the input_sp.dat file that can be run with the electronic structure package (e.g. Orca or 
+Gaussian). To list the different options run (**python make_sp_g09.py -h**). This will create an input file of single point computations for each reaction coordinate structure. This file  contains
 the lines: 
 
 "Single Point computation for reaction coordinate: " 
@@ -43,7 +43,7 @@ then be used as an input for Kudi.
 2. From an transition state structure
 
 If you only have a optimized transition state structure and have not yet obtained the reaction path, Kudi can help you
-generate the IRC or output file, with the make_irc_g09.py script. To check the options run *python make_irc_g09.py-h* 
+generate the IRC or output file, with the **make_irc_g09.py** script. To check the options run **python make_irc_g09.py-h**
 in your shell.
 
 
