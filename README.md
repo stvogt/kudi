@@ -22,7 +22,7 @@ add the "kudi' folder to your PYTHONPATH or copy the folder to an existing PYTHO
 Coming soon.
 
 
-## Obtaining an output file that can be read by Kudi
+### Data pre-processing
 
 The Kudi objects containing all the reaction path data, is initialized with an output file.
 This output file contains a series of single point computations, one for each point 
