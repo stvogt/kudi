@@ -9,7 +9,7 @@ a reaction path of a chemical reaction. It is build in python 3 and its straight
 ### Install Kudi
 1. Requirements
 
-In order to be able to run a kudi script you need to have an instalation of numpy, scipy and matplotlib
+To run a kudi script you need to have an instalation of numpy, scipy and matplotlib
 in your python 3 distribiution. 
 
 1. As standalone python package
