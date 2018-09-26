@@ -47,6 +47,6 @@ generate the IRC or output file, with the **make_irc_g09.py** script. To check t
 in your shell.
 
 
-## Using Kudi
+### Using Kudi
 
 In the [tutorials folder](https://github.com/stvogt/kudi/tree/master/tutorials) there are several tutorials that ilustrates the capabilities of Kudi. A complete Manual is currently under construction. 
