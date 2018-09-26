@@ -4,20 +4,20 @@ Kudi: An open-source python library for the analysis of properties along reactio
 
 ### Overview
 Kudi is a tool that allows effortless extraction of chemically relevant data along 
-a reaction path of a chemical reaction. It is build in python 3 and its straightforward structure makes userfriendly and allows for effortless implementation of new capabilities, and extension to any quantum chemistry package. At the moment kudi can be used in conjunction with Orca4.0 and Gaussian09
+a reaction path of a chemical reaction. It is build in python 3 and its straightforward structure makes userfriendly and allows for effortless implementation of new capabilities, and extension to any quantum chemistry package. Currently Kudi can be used in conjunction with Orca4.0 and Gaussian09
 
 ### Install Kudi
 1. Requirements
 
-To run a kudi script you need to have an instalation of numpy, scipy and matplotlib
-in your python 3 distribiution. 
+To run a kudi script you need numpy, scipy and matplotlib
+in your python 3 distribiution. The tutorials are made for jupyter-notebook.
 
-1. As standalone python package
+2. As standalone python package
 
 Clone the repostitory using git and
 add the "kudi' folder to your PYTHONPATH or copy the folder to an existing PYTHONPATH.
 
-2. Using conda
+3. Using conda
 
 Coming soon.
 
