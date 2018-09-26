@@ -47,7 +47,7 @@ def get_rx_coord(lines,startline=0):
        if coord_line:
            print lines[lineNum]
            return coord_line.group(1)
-            
+
 def xyz_for_sp(lines):
     coordinates = [] # List with all xyz Coordinates
     scan_coords = [] # List with all scaning coordinates
