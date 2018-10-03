@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 # u = TVRegDiff( data, iter, alph, u0, scale, ep, dx, plotflag, diagflag );
-# 
+#
 # Rick Chartrand (rickc@lanl.gov), Apr. 10, 2011
 # Please cite Rick Chartrand, "Numerical differentiation of noisy,
-# nonsmooth data," ISRN Applied Mathematics, Vol. 2011, Article ID 164564, 
-# 2011. 
+# nonsmooth data," ISRN Applied Mathematics, Vol. 2011, Article ID 164564,
+# 2011.
 #
 # Inputs:  (First three required; omitting the final N parameters for N < 7
-#           or passing in [] results in default values being used.) 
+#           or passing in [] results in default values being used.)
 #       data        Vector of data to be differentiated.
 #
 #       iter        Number of iterations to run the main loop.  A stopping
@@ -55,11 +55,11 @@
 #                   preconditioning problems.  When tolerance is not met,
 #                   an early iterate being best is more worrying than a
 #                   large relative residual.
-#                   
+#
 # Output:
 #
 #       u           Estimate of the regularized derivative of data.  Due to
-#                   different grid assumptions, length( u ) = 
+#                   different grid assumptions, length( u ) =
 #                   length( data ) + 1 if scale = 'small', otherwise
 #                   length( u ) = length( data ).
 
@@ -85,25 +85,25 @@
 # RESPONSIBILITY FOR THE ACCURACY, COMPLETENESS, OR USEFULNESS OF
 # ANY INFORMATION, APPARATUS, PRODUCT, OR PROCESS DISCLOSED, OR
 # REPRESENTS THAT ITS USE WOULD NOT INFRINGE PRIVATELY OWNED
-# RIGHTS. 
+# RIGHTS.
 
 ## BSD License notice:
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
-# are met: 
-# 
+# are met:
+#
 #      Redistributions of source code must retain the above
 #      copyright notice, this list of conditions and the following
-#      disclaimer.  
+#      disclaimer.
 #      Redistributions in binary form must reproduce the above
 #      copyright notice, this list of conditions and the following
 #      disclaimer in the documentation and/or other materials
-#      provided with the distribution. 
+#      provided with the distribution.
 #      Neither the name of Los Alamos National Security nor the names of its
 #      contributors may be used to endorse or promote products
 #      derived from this software without specific prior written
-#      permission. 
-#  
+#      permission.
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -116,7 +116,7 @@
 # AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE. 
+# POSSIBILITY OF SUCH DAMAGE.
 #
 #########################################################
 #                                                       #
@@ -137,7 +137,7 @@ except ImportError:
     sys.exit("Numpy and Scipy must be installed for TVRegDiag to work - aborting")
 
 _has_matplotlib = True
-    
+
 try:
     import matplotlib.pyplot as plt
 except ImportError:
@@ -150,7 +150,7 @@ def chop( v ):
 
 
 def TVRegDiff( data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, plotflag=_has_matplotlib, diagflag=1):
-    
+
     ## code starts here
     # Make sure we have a column vector
     data = np.array(data)
@@ -159,54 +159,54 @@ def TVRegDiff( data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, plot
         return
     # Get the data size.
     n = len(data)
-    
+
     # Default checking. (u0 is done separately within each method.)
     if dx is None:
         dx = 1.0 / n
-    
+
     # Different methods for small- and large-scale problems.
     if (scale.lower() == 'small'):
-        
+
         # Construct differentiation matrix.
         c = np.ones(n + 1) / dx
         D = sparse.spdiags( [ -c, c ], [ 0, 1 ], n, n + 1 )
-        
+
         DT = D.transpose()
-        
+
         # Construct antidifferentiation operator and its adjoint.
         A  = lambda x: chop( np.cumsum(x) - 0.5 * (x + x[0]) ) * dx
         AT = lambda w: (sum( w ) * np.ones( n + 1 ) - np.transpose(np.concatenate(([sum( w ) / 2.0], np.cumsum( w ) - w / 2.0) ))) * dx
-        
+
         # Default initialization is naive derivative
-        
+
         if u0 is None:
             u0 = np.concatenate(([0], np.diff(data), [0]))
-        
+
         u = u0
         # Since Au( 0 ) = 0, we need to adjust.
         ofst = data[0]
         # Precompute.
         ATb = AT( ofst - data )        # input: size n
-        
+
         # Main loop.
         for ii in range(1, itern+1):
             # Diagonal matrix of weights, for linearizing E-L equation.
             Q = sparse.spdiags( 1. / ( np.sqrt( ( D * u )**2 + ep ) ), 0, n, n )
             # Linearized diffusion matrix, also approximation of Hessian.
             L = dx * DT * Q * D
-            
+
             # Gradient of functional.
             g = AT( A( u ) ) + ATb + alph * L * u
-            
+
             # Prepare to solve linear equation.
             tol = 1e-4
             maxit = 100
             # Simple preconditioner.
             P = alph * sparse.spdiags(  L.diagonal() + 1, 0, n + 1, n + 1 )
-            
+
             linop = lambda v: ( alph * L * v + AT( A( v ) ) )
             linop = splin.LinearOperator((n + 1, n + 1), linop)
-            
+
             if diagflag:
                 [s, info_i] = sparse.linalg.cg( linop, g, None, tol, maxit, None, P )
                 print('iteration {0:4d}: relative change = {1:.3e}, gradient norm = {2:.3e}\n'.format(ii, np.linalg.norm( s[0] ) / np.linalg.norm( u ), np.linalg.norm( g ) ))
@@ -222,11 +222,11 @@ def TVRegDiff( data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, plot
             if plotflag:
                 plt.plot( u )
                 plt.show()
-        
-        
-        
+
+
+
     elif (scale.lower() == 'large'):
-        
+
         # Construct antidifferentiation operator and its adjoint.
         A = lambda v: np.cumsum(v)
         AT = lambda w: ( sum(w) * np.ones( len( w ) ) - np.transpose( np.concatenate(([0.0], np.cumsum( w[:-1] ) )) ) )
@@ -245,7 +245,7 @@ def TVRegDiff( data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, plot
         u = u0
         # Precompute.
         ATd = AT( data )
-        
+
         # Main loop.
         for ii in range(1, itern + 1):
             # Diagonal matrix of weights, for linearizing E-L equation.
@@ -263,10 +263,10 @@ def TVRegDiff( data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, plot
             # Prepare to solve linear equation.
             tol = 1.0e-4
             maxit = 100
-            
+
             linop = lambda v: ( alph * L * v + AT( A( v ) ) )
             linop = splin.LinearOperator((n, n), linop)
-            
+
             if diagflag:
                 [s, info_i] = sparse.linalg.cg( linop, -g, None, tol, maxit, None, np.dot(R.transpose(), R) )
                 print('iteration {0:4d}: relative change = {1:.3e}, gradient norm = {2:.3e}\n'.format(ii, np.linalg.norm( s[0] ) / np.linalg.norm( u ), np.linalg.norm( g ) ))
@@ -274,7 +274,7 @@ def TVRegDiff( data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, plot
                     print("WARNING - convergence to tolerance not achieved!")
                 elif (info_i < 0):
                     print("WARNING - illegal input or breakdown")
-                    
+
             else:
                 [s, info_i] = sparse.linalg.cg( linop, -g, None, tol, maxit, None, np.dot(R.transpose(), R) )
             # Update current solution
@@ -283,24 +283,23 @@ def TVRegDiff( data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, plot
             if plotflag:
                 plt.plot( u/dx )
                 plt.show()
-        
+
         u = u/dx
-    
+
     return u
 
 # Small testing script
-    
+
 if __name__ == "__main__":
-    
+
     x0 = np.arange(0, 2.0*np.pi, 0.05)
     testf = [np.sin(x) for x in x0]
     testf = testf + np.random.normal(0.0, 0.04, x0.shape)
     deriv_sm = TVRegDiff(testf, 100, 5e-2, dx=0.05, ep=1e-1, scale='small', plotflag=0)
     deriv_lrg = TVRegDiff(testf, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', plotflag=0)
-    
+
     if (_has_matplotlib):
         plt.plot(testf)
         plt.plot(deriv_sm)
         plt.plot(deriv_lrg)
         plt.show()
-

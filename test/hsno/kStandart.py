@@ -1,7 +1,6 @@
 
 import sys
-sys.path.append('/home/stvogt/repos/kudi/kudi')
-from kudi3 import Path
+from kudi import Path
 
 outfile = sys.argv[1]
 

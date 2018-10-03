@@ -4,16 +4,16 @@ import sys,re,math
 import re
 
 def get_property(lines, Tag, position):
-  for line in lines:
-    if Tag in line:
-      property_ = line.split()[position]
-      return property_
-    
+    for line in lines:
+        if Tag in line:
+            property_ = line.split()[position]
+            return property_
+
 def get_energy(lines):
-    return get_property(lines,"FINAL SINGLE POINT ENERGY",4) 
+    return get_property(lines,"FINAL SINGLE POINT ENERGY",4)
 
 def get_scf(lines):
-    return get_property(lines,"Total Energy       :",3) 
+    return get_property(lines,"Total Energy       :",3)
 
 def get_orbitals(lines, startline=0,  endstring="^\s*$"):
     orb_num  = []
@@ -37,9 +37,9 @@ def get_orbitals(lines, startline=0,  endstring="^\s*$"):
 
 def get_symm_orbs(lines,startline=0,  endstring="^\s*$"):
     ''' Extracts the oribtal energy of each irrep '''
-    Occ_orbs ={}    
-    Virt_orbs = {}  
-    All_orbs = {}   
+    Occ_orbs ={}
+    Virt_orbs = {}
+    All_orbs = {}
     orbs_re = re.compile(r'^\s+(\d+)\s+(\d\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(\d+-[A-Z].*)')
     count = 0
     for lineNum in range(startline,len(lines)):
@@ -170,4 +170,3 @@ def get_lowedin(lines, startline=0, endstring="^\s*$" ):
                 charge_list.append(charge)
                 charge_dict[atom_full] = charge
     return (charge_dict, atom_full_list, charge_list)
-
