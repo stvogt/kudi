@@ -1,7 +1,7 @@
 Kudi: An open-source python library for the analysis of properties along reaction paths
 =======
 
-![Kudi](./KudiLogo.png =100x20)
+![Kudi](./KudiLogo.png)
 
 ### Overview
 Kudi is a tool that allows effortless extraction of chemically relevant data along 
