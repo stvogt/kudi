@@ -5,16 +5,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.ticker import MaxNLocator
-plt.switch_backend('agg')
+#plt.switch_backend('agg')
 from scipy.integrate import simps
 from scipy.integrate import cumtrapz
-import singlePoint3 as sp
-import tvregdiff3
+from . import singlePoint as sp
+from . import tvregdiff
 
 header ='''
 -----------------------------------------------------------------------
           kudi: An Open-Source Reaction Path Proccesing Library
-                            kudi 1.0
+                            kudi 0.3.0
 
                             S. Vogt-Geisse
 -----------------------------------------------------------------------
@@ -74,7 +74,7 @@ def neg_derivative_smooth(x_coord, y_coord):
   fy_coord = list(map(float, y_coord))
   x = np.array(fx_coord)
   y = np.array(fy_coord)
-  f = -tvregdiff3.TVRegDiff(y, 20, 1e-1, dx=0.05, ep=1e-2, scale='large', plotflag=0)/tvregdiff3.TVRegDiff(x, 20, 1e-1, dx=0.05, ep=1e-2, scale='large', plotflag=0)
+  f = -tvregdiff.TVRegDiff(y, 20, 1e-1, dx=0.05, ep=1e-2, scale='large', plotflag=0)/tvregdiff.TVRegDiff(x, 20, 1e-1, dx=0.05, ep=1e-2, scale='large', plotflag=0)
   return (x, f)
 
 def integrate(x_coord, y_coord):

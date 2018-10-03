@@ -1,30 +1,30 @@
 #! /usr/bin/python
 
 import sys, os, glob, random
-import pathEngine3
-import gaussianPoint3 as gsp
-import orcaPoint3 as osp
-import singlePoint3 as sp
-import operations3 as op
-import nbo3
 import numpy as np
+from . import pathEngine
+from . import gaussianPoint as gsp
+from . import orcaPoint as osp
+from . import singlePoint as sp
+from . import  operations as op
+from . import  nbo
 
 class Path:
   def __init__(self, outfile, *argv):
     self.outfile = outfile
     self.outpath = os.path.abspath(outfile)
     self.lines = op.read_lines(outfile)
-    self.blocks = pathEngine3.get_blocks(self.lines)
+    self.blocks = pathEngine.get_blocks(self.lines)
     try:
         self.out_cat = argv[0]
         self.lines_cat = op.read_lines(out_cat)
-        self.blocks_cat = pathEngine3.get_blocks(self.lines_cat)
+        self.blocks_cat = pathEngine.get_blocks(self.lines_cat)
     except IndexError:
         pass
     try:
         self.out_an = argv[1]
         self.lines_an = op.read_lines(out_an)
-        self.blocks_an = pathEngine3.get_blocks(self.lines_an)
+        self.blocks_an = pathEngine.get_blocks(self.lines_an)
     except IndexError:
         pass
 
@@ -33,32 +33,31 @@ class Path:
     return sp.program(self.lines)
 
   def rxCoord(self):
-    rx_coord = pathEngine3.get_rxCoord(self.lines)  
+    rx_coord = pathEngine.get_rxCoord(self.lines)  
     return rx_coord
 
   def energy(self,relative=True):
     if self.program() == "G09":
-        energy = pathEngine3.extract_from_blocks(gsp.get_energy, self.blocks)
+        energy = pathEngine.extract_from_blocks(gsp.get_energy, self.blocks)
     if self.program() == "Orca":
-        energy = pathEngine3.extract_from_blocks(osp.get_energy, self.blocks)
+        energy = pathEngine.extract_from_blocks(osp.get_energy, self.blocks)
     if relative:
        rx = [float(i) for i in self.rxCoord()]
        energy[:] = [(float(x) - float(energy[rx.index(min(rx))]))*627.509469 for x in energy]
-       #energy[:] = [(float(x) - float(energy[0]))*627.509469 for x in energy]
     return {"Reaction Coordinate": self.rxCoord(), "Energy":energy}
 
   def energy_mp2(self):
-    energy = pathEngine3.extract_from_blocks(gsp.get_mp2_energy, self.blocks)
+    energy = pathEngine.extract_from_blocks(gsp.get_mp2_energy, self.blocks)
     energy[:] = [(float(x) - float(energy[0]))*627.509469 for x in energy]
     return {"Reaction Coordinate": self.rxCoord(), "Energy":energy}
 
   def energy_casscf(self):
-    energy = pathEngine3.extract_from_blocks(gsp.get_casscf_energy, self.blocks)
+    energy = pathEngine.extract_from_blocks(gsp.get_casscf_energy, self.blocks)
     energy[:] = [(float(x) - float(energy[0]))*627.509469 for x in energy]
     return {"Reaction Coordinate": self.rxCoord(), "Energy":energy}
 
   def corr_energy(self):
-    energy = pathEngine3.extract_from_blocks(gsp.get_corr_energy, self.blocks)
+    energy = pathEngine.extract_from_blocks(gsp.get_corr_energy, self.blocks)
     return {"Reaction Coordinate": self.rxCoord(), "Energy":energy}
 
   def force(self):
@@ -71,7 +70,7 @@ class Path:
     print("----Distances---")
     sigma = []
     Sigma = {}
-    all_dis = pathEngine3.extract_from_blocks(sp.bonddistance,self.blocks,dis_list)
+    all_dis = pathEngine.extract_from_blocks(sp.bonddistance,self.blocks,dis_list)
     num_dist = len(all_dis[0][0])
     Sigma["Reaction Coordinate"] = self.rxCoord()
     for j in range(0, num_dist):
@@ -86,7 +85,7 @@ class Path:
     print("----Angles---")
     sigma = []
     Sigma = {}
-    all_angles = pathEngine3.extract_from_blocks(sp.angle,self.blocks,ang_list)
+    all_angles = pathEngine.extract_from_blocks(sp.angle,self.blocks,ang_list)
     num_ang = len(all_angles[0][0])
     Sigma["Reaction Coordinate"] = self.rxCoord()
     for j in range(0, num_ang):
@@ -101,7 +100,7 @@ class Path:
     print("----Out-of-Plane Angle----")
     sigma = []
     Sigma = {}
-    all_angles = pathEngine3.extract_from_blocks(sp.oop_angle,self.blocks,oop_list)
+    all_angles = pathEngine.extract_from_blocks(sp.oop_angle,self.blocks,oop_list)
     num_ang = len(all_angles[0][0])
     Sigma["Reaction Coordinate"] = self.rxCoord()
     for j in range(0, num_ang):
@@ -116,7 +115,7 @@ class Path:
     print("----Dihedral----")
     sigma = []
     Sigma = {}
-    all_angles = pathEngine3.extract_from_blocks(sp.dihedral,self.blocks,dihed_list)
+    all_angles = pathEngine.extract_from_blocks(sp.dihedral,self.blocks,dihed_list)
     num_ang = len(all_angles[0][0])
     Sigma["Reaction Coordinate"] = self.rxCoord()
     for j in range(0, num_ang):
@@ -130,7 +129,7 @@ class Path:
   def bondOrders(self,ord_list=[]):
     Bndo = {}
     bndo_list = []
-    bondOrder = pathEngine3.extract_from_blocks(nbo3.bondOrder,self.blocks,ord_list)
+    bondOrder = pathEngine.extract_from_blocks(nbo.bondOrder,self.blocks,ord_list)
     rx_coord = self.rxCoord()
     Bndo["Reaction Coordinate"] = rx_coord
     print("----------- Bonds ----------")
@@ -162,7 +161,7 @@ class Path:
   def natCharges(self,atm_list=[]):
     Charges = {}
     charges_list = []
-    charges =  pathEngine3.extract_from_blocks(nbo3.natCharges,self.blocks,atm_list)
+    charges =  pathEngine.extract_from_blocks(nbo.natCharges,self.blocks,atm_list)
     rx_coord = self.rxCoord()
     Charges["Reaction Coordinate"] = rx_coord
     print("------------Charges-------------")
@@ -176,13 +175,13 @@ class Path:
     return Charges
 
   def bondOrbital(self):
-    pathEngine3.all_bondOrbitals(self.blocks)
+    pathEngine.all_bondOrbitals(self.blocks)
 
   def occ_orbitals(self):
     if self.program() == "G09":
-        all_orbs = pathEngine3.extract_from_blocks(gsp.get_orbitals, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
     if self.program() == "Orca":
-        all_orbs = pathEngine3.extract_from_blocks(osp.get_orbitals, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
     Epsilon = []
     for coord in range(0,len(all_orbs)):
         Epsilon.append(all_orbs[coord][0])
@@ -190,9 +189,9 @@ class Path:
 
   def virt_orbitals(self):
     if self.program() == "G09":
-        all_orbs = pathEngine3.extract_from_blocks(gsp.get_orbitals, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
     if self.program() == "Orca":
-        all_orbs = pathEngine3.extract_from_blocks(osp.get_orbitals, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
     Epsilon = []
     for coord in range(0,len(all_orbs)):
       Epsilon.append(all_orbs[coord][1])
@@ -200,9 +199,9 @@ class Path:
 
   def symmetry_orbitals_occ(self):
     if self.program() == "G09":
-        all_orbs = pathEngine3.extract_from_blocks(gsp.get_symm_orbs, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(gsp.get_symm_orbs, self.blocks)
     if self.program() == "Orca":
-        all_orbs = pathEngine3.extract_from_blocks(osp.get_symm_orbs, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(osp.get_symm_orbs, self.blocks)
     val_orbs = op.num_valence_orbs(self.atoms())
     epsilon = []
     Epsilon = {}
@@ -219,10 +218,10 @@ class Path:
 
   def all_orbtitals(self):
     if self.program() == "G09":
-        all_orbs = pathEngine3.extract_from_blocks(gsp.get_orbitals, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
         start = 1
     if self.program() == "Orca":
-        all_orbs = pathEngine3.extract_from_blocks(osp.get_orbitals, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
         start = 0
     epsilon = []
     Epsilon = {}
@@ -237,10 +236,10 @@ class Path:
 
   def HOMO_LUMO(self):
     if self.program() == "G09":
-        all_orbs = pathEngine3.extract_from_blocks(gsp.get_orbitals, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
         start = 1
     if self.program() == "Orca":
-        all_orbs = pathEngine3.extract_from_blocks(osp.get_orbitals, self.blocks)
+        all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
         start = 0
     HOMO = []
     LUMO = []
@@ -266,7 +265,7 @@ class Path:
 
 
   def symm_orbitals(self):
-      symm_orbs_all = pathEngine3.all_symm_orbs_energ(self.blocks)[0]
+      symm_orbs_all = pathEngine.all_symm_orbs_energ(self.blocks)[0]
       if self.program() == "G09":
         symm_orbs_occ = gsp.get_symm_orbs(self.lines)[0]
         symm_orbs_virt = gsp.get_symm_orbs(self.lines)[1]
@@ -288,17 +287,17 @@ class Path:
       return symm_orbs_all
 
   def chemPotKoopman(self):
-    #chemPot = pathEngine3.all_koopmans(self.blocks)
-    chemPot = pathEngine3.extract_from_blocks(sp.koopmans, self.blocks)
+    #chemPot = pathEngine.all_koopmans(self.blocks)
+    chemPot = pathEngine.extract_from_blocks(sp.koopmans, self.blocks)
     return {"Reaction Coordinate": self.rxCoord(), "Chemical Potential":chemPot}
 
   def chemPotSymm(self):
-    chemPot = pathEngine3.extract_from_blocks(gsp.symm_chem_pot, self.blocks)
+    chemPot = pathEngine.extract_from_blocks(gsp.symm_chem_pot, self.blocks)
     return {"Reaction Coordinate": self.rxCoord(), "Chemical Potential":chemPot}
 
   def chemPotGeneral(self,orbOcc,orbVirt):
     chemPotGen = []
-    orbs = pathEngine3.all_symm_orbs_energ(self.blocks)[0]
+    orbs = pathEngine.all_symm_orbs_energ(self.blocks)[0]
     orbOcc_enrg = orbs[orbOcc]
     orbVirt_energ= orbs[orbVirt]
     for i in range(0,len(orbOcc_enrg)):
@@ -406,7 +405,7 @@ class Path:
       os.makedirs("data")
     os.chdir("data")
     energy = self.energy()
-    pathEngine3.get_all_xyz(self.blocks, energy["Reaction Coordinate"], energy["Energy"], format_)
+    pathEngine.get_all_xyz(self.blocks, energy["Reaction Coordinate"], energy["Energy"], format_)
     os.chdir("../")
 
   def ReactionWorks(self,format_='text'):

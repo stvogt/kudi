@@ -1,8 +1,9 @@
-import sys,re,math
-import operations3 as op
-import gaussianPoint3 as gsp
-import orcaPoint3 as osp
+import sys,re
 import numpy as np
+
+from . import operations as op
+from . import gaussianPoint as gsp
+from . import orcaPoint as osp
 
 def program(lines):
   for line in lines:
@@ -48,7 +49,7 @@ def bonddistance(lines,dis_list):
   zCoord = xyz[3]
   def distance_calc(i,j):
       label = atomLabel[i] + str(i+1) + "-" + atomLabel[j] + str(j+1)
-      bnd_distance = math.sqrt((float(xCoord[i])-float(xCoord[j]))**2 + (float(yCoord[i])-float(yCoord[j]))**2 + (float(zCoord[i])-float(zCoord[j]))**2)
+      bnd_distance = np.sqrt((float(xCoord[i])-float(xCoord[j]))**2 + (float(yCoord[i])-float(yCoord[j]))**2 + (float(zCoord[i])-float(zCoord[j]))**2)
       bondLabel.append(label)
       bondDistance.append(bnd_distance)
       return(bondLabel,bondDistance)
@@ -90,7 +91,7 @@ def angle(lines,ang_list):
       v_ik = np.array([float(xCoord[i]) - float(xCoord[k]),float(yCoord[i]) - float(yCoord[k]),float(zCoord[i]) - float(zCoord[k])])
       e_ij = np.divide(v_ij,np.linalg.norm(v_ij))
       e_ik = np.divide(v_ik,np.linalg.norm(v_ik))
-      theta = 180.0/math.pi*math.acos(np.dot(e_ij,e_ik))
+      theta = 180.0/np.pi*np.arccos(np.dot(e_ij,e_ik))
       angle.append(theta)
       angleLabel.append(label)
       return(angleLabel,angle)
@@ -141,11 +142,11 @@ def oop_angle(lines,oop_list):
       e_kl = np.divide(v_kl,np.linalg.norm(v_kl))
       e_ki = np.divide(v_ki,np.linalg.norm(v_ki))
       e_kj = np.divide(v_kj,np.linalg.norm(v_kj))
-      theta_jkl = math.acos(np.dot(e_kj,e_kl))
+      theta_jkl = np.arccos(np.dot(e_kj,e_kl))
       a = np.dot(np.cross(e_kj,e_kl),e_ki)
-      b = math.sin(theta_jkl)
+      b = np.sin(theta_jkl)
       sin_theta = a/b
-      theta = (180.0/math.pi)*math.asin(round(sin_theta,5))
+      theta = (180.0/np.pi)*np.asin(round(sin_theta,5))
       oop.append(theta)
       oopLabel.append(label)
       return(oopLabel,oop)
@@ -191,10 +192,10 @@ def dihedral(lines,dihed_list):
       e_ij = np.divide(v_ij,np.linalg.norm(v_ij))
       e_jk = np.divide(v_jk,np.linalg.norm(v_jk))
       e_kl = np.divide(v_kl,np.linalg.norm(v_kl))
-      theta_ijk = math.acos(np.dot(e_ij,e_jk))
-      theta_jkl = math.acos(np.dot(e_jk,e_kl))
-      cos_delta = (np.dot(np.cross(e_ij,e_jk),np.cross(e_jk,e_kl)))/(math.sin(theta_ijk)*math.sin(theta_jkl))
-      delta = (180.0/math.pi)*math.acos(round(cos_delta,5))
+      theta_ijk = np.arccos(np.dot(e_ij,e_jk))
+      theta_jkl = np.arccos(np.dot(e_jk,e_kl))
+      cos_delta = (np.dot(np.cross(e_ij,e_jk),np.cross(e_jk,e_kl)))/(np.sin(theta_ijk)*np.sin(theta_jkl))
+      delta = (180.0/np.pi)*np.arccos(round(cos_delta,5))
       dihedral.append(delta)
       dihedralLabel.append(label)
       return(dihedralLabel,dihedral)

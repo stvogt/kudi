@@ -7,8 +7,9 @@ import sys
 import os
 import getpass
 import re
-import gaussianPoint3 as gsp
 from collections import defaultdict
+
+from . import gaussianPoint as gsp
 
 def natCharges(filelines, atm_list):
   #atomLabel = []

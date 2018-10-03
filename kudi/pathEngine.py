@@ -2,10 +2,10 @@
 
 import sys, re
 import numpy as np
-import singlePoint3 as sp
-import gaussianPoint3 as gsp
-import orcaPoint3 as osp
-import nbo3
+import kudi.singlePoint as sp
+import kudi.gaussianPoint as gsp
+import kudi.orcaPoint as osp
+import kudi.nbo
 
 def process_occ_energies(occ_energies):
   processed_energies = []
