@@ -11,11 +11,12 @@ a reaction path of a chemical reaction. It is build in python 3 and its straight
 ### Install Kudi
 
 
-In the environment you want to install kudi run:
 
 **git clone https://github.com/stvogt/kudi**
 
 **cd /path/to/kudi**
+
+Install within your prefered python environment:
 
 **python setup.py install**
 
