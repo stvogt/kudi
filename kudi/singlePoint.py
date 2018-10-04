@@ -10,8 +10,8 @@ def program(lines):
         #if " Gaussian, Inc." in line:
         if ("Symbolic Z-Matrix:") or ("Symbolic Z-matrix:") in line:
             return "G09"
-        #if "* O   R   C   A *" or "JOB NUMBER" in line:
-        if "JOB NUMBER" in line:
+        if ("* O   R   C   A *" or "JOB NUMBER") in line:
+        #if "JOB NUMBER" in line:
             return "Orca"
         elif line == lines[-1]:
             print("Output file format no supported\nExit")

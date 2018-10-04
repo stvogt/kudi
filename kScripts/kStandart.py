@@ -12,10 +12,11 @@ Mol = Path(outfile)
 #works = Mol.ReactionWorks(format_='latex')
 
 # Saves XYZ coordinates in molden text or latex format
-Mol.saveXYZ(format_="molden")
+#Mol.saveXYZ(format_="molden")
 
 # Plot energy profile
 energy = Mol.energy()
+sys.exit(1)
 Mol.savePlot('energy.svg', "Energy",  **energy)
 Mol.save("energy.dat",**energy)
 

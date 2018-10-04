@@ -10,7 +10,8 @@ def get_property(lines, Tag, position):
             return property_
 
 def get_energy(lines):
-    return get_property(lines,"FINAL SINGLE POINT ENERGY",4)
+    en = get_property(lines,"FINAL SINGLE POINT ENERGY",4)
+    return en
 
 def get_scf(lines):
     return get_property(lines,"Total Energy       :",3)

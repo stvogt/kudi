@@ -41,9 +41,9 @@ class Path:
             energy = pathEngine.extract_from_blocks(gsp.get_energy, self.blocks)
         if self.program() == "Orca":
             energy = pathEngine.extract_from_blocks(osp.get_energy, self.blocks)
-        if relative:
-            rx = [float(i) for i in self.rxCoord()]
-            energy[:] = [(float(x) - float(energy[rx.index(min(rx))]))*627.509469 for x in energy]
+        #if relative:
+        #    rx = [float(i) for i in self.rxCoord()]
+        #    energy[:] = [(float(x) - float(energy[rx.index(min(rx))]))*627.509469 for x in energy]
         return {"Reaction Coordinate": self.rxCoord(), "Energy":energy}
 
     def energy_mp2(self):

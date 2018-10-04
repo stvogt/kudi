@@ -19,10 +19,13 @@ def process_occ_energies(occ_energies):
             processed_energies.append(item)
     return processed_energies
 
-def extract_from_blocks(func,blocks,*argv):
+def extract_from_blocks(func,blocks,*argv): #not working for orca. Very odd bug the function osp.get_energy is not being called correctly
     list_ = []
     for blockNum in range(0,len(blocks)):
         prop = func(blocks[blockNum],*argv)
+        lines = ["fafa","fsdafda","gagfgaf"]
+        prop = func(lines)
+        en = osp.get_energy(blocks[blockNum],*argv)
         list_.append(prop)
     return list_
 
