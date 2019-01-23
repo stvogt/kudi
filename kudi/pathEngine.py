@@ -23,7 +23,8 @@ def extract_from_blocks(func,blocks,*argv): #not working for orca. Very odd bug 
     list_ = []
     for blockNum in range(0,len(blocks)):
         prop = func(blocks[blockNum],*argv)
-        list_.append(float(prop))
+        #list_.append(float(prop))
+        list_.append(prop)
     return list_
 
 def get_rxCoord(lines):
