@@ -105,7 +105,7 @@ if not os.path.isdir("CHK"):
 xyz = xyz_for_sp(filelines) 
 
 count = 0
-for rxc in sorted(xyz.iterkeys()):
+for rxc in sorted(xyz.keys()):
     coords = xyz[rxc]
     f.write("%NProcShared="+proc_num+"\n")
     f.write("%Mem="+mem_num+"\n")
