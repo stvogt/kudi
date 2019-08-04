@@ -1,7 +1,7 @@
 #! /usr/bin/python 
 
 import sys, re, os
-import kudi.gaussianPoint3 as gsp
+import kudi.gaussianPoint as gsp
 from optparse import OptionParser
 
 def xyz_for_sp(lines):
