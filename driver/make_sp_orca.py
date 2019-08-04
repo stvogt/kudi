@@ -3,7 +3,7 @@
 import sys, re, os
 from collections import OrderedDict
 from optparse import OptionParser
-import orcaPoint as orp
+import kudi.orcaPoint as orp
 
 parser = OptionParser() 
 parser.add_option("-o", "--output_scan", dest="filenameScan", help="File with IRC output (default: output.log) Warning: Use join_irc.py to create the correct outputfile ", default = "output.log") 
