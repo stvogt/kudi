@@ -12,6 +12,7 @@ def xyz_for_sp(lines):
     reverse=True
     #Regular expresion definitions
     xyz_re = re.compile('(\s+\d+){3}(\s+-?\d+\.\d+){3}')
+    #forward_re = re.compile(r'#.*forward')
     forward_re = re.compile(r'#.*forward')
     inp_re = re.compile("Input orientation")
     zmat_re = re.compile("Z-Matrix orientation")
