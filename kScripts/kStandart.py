@@ -16,7 +16,6 @@ Mol = Path(outfile)
 
 # Plot energy profile
 energy = Mol.energy()
-sys.exit(1)
 Mol.savePlot('energy.svg', "Energy",  **energy)
 Mol.save("energy.dat",**energy)
 
