@@ -29,6 +29,7 @@ def xyz_for_sp(lines):
         imatch = re.search(inp_re,line)
         zmatch = re.search(zmat_re,line)
         if fmatch:
+            print(line)
             reverse = False
         #if "Input orientation:" or "Z-Matrix orientation"in line:
         if (imatch or zmatch):
