@@ -5,7 +5,7 @@ import numpy as np
 import kudi.singlePoint as sp
 import kudi.gaussianPoint as gsp
 import kudi.orcaPoint as osp
-import kudi.nbo
+import kudi.nbo as nbo
 
 def process_occ_energies(occ_energies):
     processed_energies = []
@@ -123,7 +123,7 @@ def all_symm_orbs_energ(blocks):
 def all_bondOrbitals(blocks):
     orbs = []
     for blockNum in range(0,len(blocks)):
-        natorb = nbo3.bondOrbitals(blocks[blockNum])
+        natorb = nbo.bondOrbitals(blocks[blockNum])
         for key in natorb:
             print(key)
             print(natorb[key])
