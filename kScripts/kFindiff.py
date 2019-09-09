@@ -44,7 +44,6 @@ def EA(energyA,energyN):
 # Calling the function objects
 IP = IP(energyC,energyN)
 Mol_neut.save("IP.dat",**IP)
-sys.exit(1)
 EA = EA(energyA,energyN)
 Mol_neut.save("EA.dat",**EA)
 

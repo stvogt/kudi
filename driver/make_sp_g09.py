@@ -13,7 +13,7 @@ def xyz_for_sp(lines):
     #Regular expresion definitions
     xyz_re = re.compile('(\s+\d+){3}(\s+-?\d+\.\d+){3}')
     #forward_re = re.compile(r'#.*forward')
-    forward_re = re.compile(r'#.*forward')
+    forward_re = re.compile(r'.*forward[,\s]')
     inp_re = re.compile("Input orientation")
     zmat_re = re.compile("Z-Matrix orientation")
     #List initiation
@@ -28,9 +28,10 @@ def xyz_for_sp(lines):
         imatch = re.search(inp_re,line)
         zmatch = re.search(zmat_re,line)
         if fmatch:
+            print(line)
             reverse = False
         #if "Input orientation:" or "Z-Matrix orientation"in line:
-        if imatch or zmatch:
+        if (imatch or zmatch):
             structures = True
             a = []
             x = []
@@ -52,7 +53,7 @@ def xyz_for_sp(lines):
                 rx_coord = -1*float(line.split()[8])
             else:
                 rx_coord = float(line.split()[8])
-            coords_dict[rx_coord]=[a,x,y,z] 
+            coords_dict[rx_coord]=[a,x,y,z]
             last = False
 
     return coords_dict
