@@ -1,8 +1,8 @@
 #! /usr/bin/python
 
 import sys, os
-import operations as op
-import singlePoint as sp
+import kudi.operations as op
+import kudi.singlePoint as sp
 from optparse import OptionParser
 
 parser = OptionParser() 
