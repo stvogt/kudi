@@ -2,8 +2,6 @@
 
 import argparse
 from pathlib import Path
-import kudi.operations as op
-import kudi.singlePoint as sp
 from typing import List
 
 def read_lines(filepath: Path) -> List[str]:
