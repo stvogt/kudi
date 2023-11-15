@@ -12,8 +12,8 @@ def xyz_for_sp(lines):
     reverse=True
     #Regular expresion definitions
     xyz_re = re.compile('(\s+\d+){3}(\s+-?\d+\.\d+){3}')
-    #forward_re = re.compile(r'#.*forward')
-    forward_re = re.compile(r'.*forward[,\s]')
+    forward_re = re.compile( r'\bforward\b')
+    #forward_re = re.compile(r'.*forward[,\s]')
     inp_re = re.compile("Input orientation")
     zmat_re = re.compile("Z-Matrix orientation")
     #List initiation
@@ -29,7 +29,6 @@ def xyz_for_sp(lines):
         zmatch = re.search(zmat_re,line)
         if fmatch:
             reverse = False
-        #if "Input orientation:" or "Z-Matrix orientation"in line:
         if imatch or zmatch:
             structures = True
             a = []
@@ -67,7 +66,7 @@ parser.add_option("-s", "--scf", dest="scf", help="The cut off criterium for scf
 parser.add_option("-c", "--charge", dest="charge", help="charge of the compuation (default: 0)", default = "0") 
 parser.add_option("-n", "--multiplicity", dest="multi", help="multiplicity of the computation (default: 1)", default = "1") 
 parser.add_option("-z", "--otheroption", dest="other", help="Any other option that should be added", default = " ") 
-parser.add_option("-v", "--invert", dest="bol", help="Make for to rev and viceversa", default = False) 
+parser.add_option("-v", "--invert", dest='invert', action="store_true", help="Make for to rev and viceversa") 
 parser.add_option("--minus1", dest="minus", help="multiply reverse reaction coordinate with -1", default = False) 
 parser.add_option("--pop", dest="population", help="Population analysis", default = "NBORead") 
 parser.add_option("--pseudo", dest="pseudo", help="Pseudo potential data (default: None)", default = "None") 
@@ -83,7 +82,7 @@ scf = options.scf
 multi = options.multi
 charge = options.charge
 other = options.other
-invert = options.bol
+invert = options.invert
 minus = options.minus
 pop = options.population
 pseudo=options.pseudo

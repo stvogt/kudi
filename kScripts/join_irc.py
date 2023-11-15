@@ -1,20 +1,59 @@
-#! /usr/bin/python
+#!/opt/anaconda/anaconda3/envs/kudi/bin/python
 
-import sys, os
+import argparse
+from pathlib import Path
 import kudi.operations as op
 import kudi.singlePoint as sp
-from optparse import OptionParser
+from typing import List
 
-rev = sys.argv[1]
-forw = sys.argv[2]
+def read_lines(filepath: Path) -> List[str]:
+    """
+    Read lines from a file.
 
-irc_rev_lines = op.read_lines(rev)
-irc_forw_lines = op.read_lines(forw)
+    Args:
+    filepath (Path): Path to the file to be read.
 
-f = open('output.log', 'w')
+    Returns:
+    List[str]: A list of lines read from the file.
+    """
+    with filepath.open('r') as file:
+        return file.readlines()
 
-for line in irc_rev_lines:
-  f.write(line)
-for line in irc_forw_lines:
-  f.write(line)
-f.close()
+def write_lines(lines: List[str], filepath: Path) -> None:
+    """
+    Write lines to a file.
+
+    Args:
+    lines (List[str]): Lines to be written to the file.
+    filepath (Path): Path to the file where lines will be written.
+    """
+    with filepath.open('w') as file:
+        for line in lines:
+            file.write(line)
+
+def main(rev_path: Path, forw_path: Path, output_path: Path) -> None:
+    """
+    Process reverse and forward IRC files and combine their contents into an output file.
+
+    Args:
+    rev_path (Path): Path to the reverse IRC file.
+    forw_path (Path): Path to the forward IRC file.
+    output_path (Path): Path to the output file.
+    """
+    irc_rev_lines = read_lines(rev_path)
+    irc_forw_lines = read_lines(forw_path)
+
+    combined_lines = irc_rev_lines + irc_forw_lines
+    write_lines(combined_lines, output_path)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Process IRC paths.")
+    parser.add_argument("rev", type=Path, help="Path to the reverse IRC file")
+    parser.add_argument("forw", type=Path, help="Path to the forward IRC file")
+    parser.add_argument("-o", "--output", type=Path, default=Path("output.log"),
+                        help="Path to the output file")
+
+    args = parser.parse_args()
+
+    main(args.rev, args.forw, args.output)
+
