@@ -71,6 +71,11 @@ class Path:
         force = op.neg_derivative(self.rxCoord(), self.energy()["Energy"])[1]
         return {"Reaction Coordinate": coord, "Reaction Force": force}
 
+    def force_cte(self):
+        coord = op.neg_derivative(self.force()["Reaction Coordinate"],self.force()['Reaction Force'])[0]
+        force_cte = op.neg_derivative(self.force()["Reaction Coordinate"],self.force()['Reaction Force'])[1]
+        return {"Reaction Coordinate":coord , "Force Constant":force_cte}
+
     def distances(self, dis_list=[]):
         print("----Distances---")
         sigma = []
