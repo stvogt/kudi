@@ -1,4 +1,6 @@
-<img src="./KudiLogo.png" alt="drawing" width="300"/>
+<p align="center">
+ <img src="./KudiLogo.png" alt="drawing" width="300"/> 
+</p>
 
 Kudi: An open-source python library for the analysis of properties along reaction paths
 =======
