@@ -6,7 +6,9 @@ Kudi: An open-source python library for the analysis of properties along reactio
 
 ### Overview
 Kudi is a tool that allows effortless extraction of chemically relevant data along 
-a reaction path of a chemical reaction. It is build in python 3 and its straightforward structure makes userfriendly and allows for effortless implementation of new capabilities, and extension to any quantum chemistry package. Currently Kudi can be used in conjunction with Orca4.0 and Gaussian09
+a reaction path of a chemical reaction. It is build in python 3 and its straightforward 
+structure makes userfriendly and allows for effortless implementation of new capabilities, 
+and extension to any quantum chemistry package. Currently Kudi can be used in conjunction with Gaussian16
 
 ### Install Kudi
 
@@ -18,7 +20,7 @@ a reaction path of a chemical reaction. It is build in python 3 and its straight
 
 Install within your prefered python environment:
 
-**python setup.py install**
+**python -m pip install .**
 
 ### Data pre-processing
 
@@ -27,10 +29,10 @@ This output file contains a series of single point computations, one for each po
 of the reaction path. This file has a special structure and needs to be created using 
 a kudi pre-processing script. 
 
-1. From an existing IRC or relaxed scan output file.
+1. From an existing IRC 
 
-Use the **make_sp** script  to create the input_sp.dat file that can be run with the electronic structure package (e.g. Orca or 
-Gaussian). To list the different options run (**python make_sp_g09.py -h**). This will create an input file of single point computations for each reaction coordinate structure. This file  contains
+Use the **make_sp** script  to create the input_sp.dat file that can be run with  
+Gaussian. To list the different options run (**python make_sp_g16.py -h**). This will create an input file of single point computations for each reaction coordinate structure. This file  contains
 the lines: 
 
 "Single Point computation for reaction coordinate: " 
@@ -41,7 +43,7 @@ then be used as an input for Kudi.
 2. From an transition state structure
 
 If you only have a optimized transition state structure and have not yet obtained the reaction path, Kudi can help you
-generate the IRC or output file, with the **make_irc_g09.py** script. To check the options run **python make_irc_g09.py-h**
+generate the IRC or output file, with the **make_irc_g16.py** script. To check the options run **python make_irc_g16.py -h**
 in your shell.
 
 

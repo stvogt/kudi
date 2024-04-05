@@ -4,11 +4,9 @@ import sys, os, glob, random
 import numpy as np
 from . import pathEngine
 from . import gaussianPoint as gsp
-from . import orcaPoint as osp
 from . import singlePoint as sp
 from . import operations as op
 from . import nbo
-
 
 class Path:
     def __init__(self, outfile, *argv):
@@ -39,8 +37,6 @@ class Path:
     def energy(self, relative=True):
         if self.program() == "G09":
             energy = pathEngine.extract_from_blocks(gsp.get_energy, self.blocks)
-        if self.program() == "Orca":
-            energy = pathEngine.extract_from_blocks(osp.get_energy, self.blocks)
         if relative:
             rx = [float(i) for i in self.rxCoord()]
             try:
@@ -190,8 +186,6 @@ class Path:
     def occ_orbitals(self):
         if self.program() == "G09":
             all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
-        if self.program() == "Orca":
-            all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
         Epsilon = []
         for coord in range(0, len(all_orbs)):
             Epsilon.append(all_orbs[coord][0])
@@ -200,8 +194,6 @@ class Path:
     def virt_orbitals(self):
         if self.program() == "G09":
             all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
-        if self.program() == "Orca":
-            all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
         Epsilon = []
         for coord in range(0, len(all_orbs)):
             Epsilon.append(all_orbs[coord][1])
@@ -210,8 +202,6 @@ class Path:
     def symmetry_orbitals_occ(self):
         if self.program() == "G09":
             all_orbs = pathEngine.extract_from_blocks(gsp.get_symm_orbs, self.blocks)
-        if self.program() == "Orca":
-            all_orbs = pathEngine.extract_from_blocks(osp.get_symm_orbs, self.blocks)
         val_orbs = op.num_valence_orbs(self.atoms())
         epsilon = []
         Epsilon = {}
@@ -230,9 +220,6 @@ class Path:
         if self.program() == "G09":
             all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
             start = 1
-        if self.program() == "Orca":
-            all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
-            start = 0
         epsilon = []
         Epsilon = {}
         num_orbs = len(all_orbs[0][2])
@@ -248,9 +235,6 @@ class Path:
         if self.program() == "G09":
             all_orbs = pathEngine.extract_from_blocks(gsp.get_orbitals, self.blocks)
             start = 1
-        if self.program() == "Orca":
-            all_orbs = pathEngine.extract_from_blocks(osp.get_orbitals, self.blocks)
-            start = 0
         HOMO = []
         LUMO = []
         HOMO_LUMO = {}
@@ -280,9 +264,6 @@ class Path:
         if self.program() == "G09":
             symm_orbs_occ = gsp.get_symm_orbs(self.lines)[0]
             symm_orbs_virt = gsp.get_symm_orbs(self.lines)[1]
-        if self.program() == "Orca":
-            symm_orbs_occ = osp.get_symm_orbs(self.lines)[0]
-            symm_orbs_virt = osp.get_symm_orbs(self.lines)[1]
         print("\nSymmetries of occupied orbitals:")
         for key in sorted(symm_orbs_occ.keys()):
             print(str(key) + ":  " + symm_orbs_occ[key])

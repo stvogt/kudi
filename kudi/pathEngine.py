@@ -1,7 +1,8 @@
 #! /usr/bin/python
 
 import sys, re
-from .program import gaussian
+from .programs.gaussian import GaussianHarness
+from . import singlePoint as sp
 
 
 def extract_from_blocks(

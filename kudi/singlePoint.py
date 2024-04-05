@@ -3,7 +3,6 @@ import numpy as np
 
 from . import operations as op
 from . import gaussianPoint as gsp
-from . import orcaPoint as osp
 
 
 def program(lines):
@@ -22,8 +21,6 @@ def program(lines):
 def koopmans(lines):
     if program(lines) == "G09":
         orbs = gsp.get_orbitals(lines)
-    if program(lines) == "Orca":
-        orbs = osp.get_orbitals(lines)
     homo = float(orbs[0][-1])
     lumo = float(orbs[1][0])
     mu = 0.5 * (lumo + homo) * 627.509469
@@ -42,9 +39,6 @@ def bonddistance(lines, dis_list):
     if program(lines) == "G09":
         xyz = gsp.get_xyz(lines)
         atomLabel = op.atom_label(xyz[0])
-    if program(lines) == "Orca":
-        xyz = osp.get_xyz(lines)
-        atomLabel = xyz[0]
     bondLabel = []
     bondDistance = []
     xCoord = xyz[1]
@@ -86,9 +80,6 @@ def angle(lines, ang_list):
     if program(lines) == "G09":
         xyz = gsp.get_xyz(lines)
         atomLabel = op.atom_label(xyz[0])
-    if program(lines) == "Orca":
-        xyz = osp.get_xyz(lines)
-        atomLabel = xyz[0]
     angleLabel = []
     angle = []
     xCoord = xyz[1]
@@ -157,9 +148,6 @@ def oop_angle(lines, oop_list):
     if program(lines) == "G09":
         xyz = gsp.get_xyz(lines)
         atomLabel = op.atom_label(xyz[0])
-    if program(lines) == "Orca":
-        xyz = osp.get_xyz(lines)
-        atomLabel = xyz[0]
     oopLabel = []
     oop = []
     xCoord = xyz[1]
@@ -239,9 +227,6 @@ def dihedral(lines, dihed_list):
     if program(lines) == "G09":
         xyz = gsp.get_xyz(lines)
         atomLabel = op.atom_label(xyz[0])
-    if program(lines) == "Orca":
-        xyz = osp.get_xyz(lines)
-        atomLabel = xyz[0]
     dihedralLabel = []
     dihedral = []
     xCoord = xyz[1]
@@ -321,8 +306,6 @@ def dihedral(lines, dihed_list):
 def xyz_pretty_print(lines):
     if program(lines) == "G09":
         coords = gsp.get_xyz(lines)
-    if program(lines) == "Orca":
-        coords = osp.get_xyz(lines)
     XYZ = ""
     XYZ_tex = ""
     XYZ_molden = ""

@@ -225,7 +225,7 @@ def general_plot_props(
     bullets,
     works,
     zeroline,
-    show=False,
+    show=True,
     **kwargs
 ):
     count = 0
