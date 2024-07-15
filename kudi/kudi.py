@@ -159,7 +159,7 @@ class Path:
         for order in bondOrder:
             if order != "Reaction Coordinate":
                 print(order)
-                neg_der = op.derivative(self.rxCoord(), self.bondOrders()[order])
+                neg_der = op.derivative(self.rxCoord(), self.bondOrders([order])[order])
                 der_dict[order] = neg_der[1]
                 der_dict["Reaction Coordinate"] = neg_der[0]
         return der_dict
