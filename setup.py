@@ -2,7 +2,7 @@
 
 import setuptools
 
-__version__ = '0.3.0'
+__version__ = 'v0.4.0'
 
 # Define the project's long description by reading from the README file
 with open("README.md", "r", encoding="utf-8") as fh:
