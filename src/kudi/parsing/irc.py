@@ -1,5 +1,6 @@
 """Segment Gaussian IRC outputs into blocks."""
 
+import re
 from typing import List
 
 from ..exceptions import ParseError
@@ -10,13 +11,21 @@ ANCHOR = "Single Point computation for reaction coordinate:"
 def extract_rx_from_anchor_line(line: str) -> float:
     """Extract the reaction coordinate from an anchor line."""
 
-    parts = line.strip().split()
-    if not parts:
-        raise ParseError("Empty anchor line")
-    try:
-        return float(parts[-1])
-    except ValueError as exc:
-        raise ParseError(f"Could not parse reaction coordinate from line: {line}") from exc
+    pattern = re.compile(r"reaction coordinate:\s*([+-]?[0-9]*\.?[0-9]+(?:[Ee][+-]?[0-9]+)?)", re.IGNORECASE)
+    match = pattern.search(line)
+    if match:
+        try:
+            return float(match.group(1))
+        except ValueError:
+            pass
+
+    for token in line.split():
+        cleaned = token.strip("\\,")
+        try:
+            return float(cleaned)
+        except ValueError:
+            continue
+    raise ParseError(f"Could not parse reaction coordinate from line: {line}")
 
 
 def segment_irc_blocks(lines: List[str], *, strict: bool = True) -> List[List[str]]:
