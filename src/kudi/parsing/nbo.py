@@ -15,16 +15,24 @@ def parse_natural_charges(block: List[str]) -> Dict[str, float]:
     except StopIteration:
         return charges
 
+    data_started = False
     for line in block[start + 1 :]:
         if not line.strip():
-            break
-        parts = line.split()
-        if len(parts) < 3 or not parts[0].isdigit():
+            if data_started:
+                break
             continue
-        index = parts[0]
-        symbol = parts[1]
+        data_started = True
+        parts = line.split()
+        if len(parts) < 3:
+            continue
+        if parts[0].isdigit():
+            index, symbol, value_token = parts[0], parts[1], parts[2]
+        elif len(parts) >= 3 and parts[1].isdigit():
+            symbol, index, value_token = parts[0], parts[1], parts[2]
+        else:
+            continue
         try:
-            value = float(parts[2])
+            value = float(value_token)
         except ValueError:
             continue
         label = f"{symbol}{index}"
@@ -45,7 +53,10 @@ def parse_wiberg_indices(block: List[str]) -> Dict[str, float]:
     if idx >= len(block):
         return bonds
 
-    column_header = block[idx].split()
+    def _normalize(token: str) -> str:
+        return token.rstrip(".")
+
+    column_header = [_normalize(token) for token in block[idx].split() if _normalize(token).isdigit()]
     data_lines: List[str] = []
     for line in block[idx + 1 :]:
         if not line.strip():
@@ -58,14 +69,15 @@ def parse_wiberg_indices(block: List[str]) -> Dict[str, float]:
     row_map: Dict[str, str] = {}
     for line in data_lines:
         parts = line.split()
-        if len(parts) >= 2 and parts[0].isdigit():
-            row_map[parts[0]] = parts[1]
+        row_token = _normalize(parts[0]) if parts else ""
+        if len(parts) >= 2 and row_token.isdigit():
+            row_map[row_token] = parts[1]
 
     for line in data_lines:
         parts = line.split()
         if len(parts) < 3:
             continue
-        row_index = parts[0]
+        row_index = _normalize(parts[0])
         row_label = row_map.get(row_index, parts[1])
         values = parts[2:]
         for col_idx, raw in enumerate(values):

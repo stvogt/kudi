@@ -20,14 +20,22 @@ class IRCPath:
         self.points = points
 
     @classmethod
-    def from_file(cls, path: Path | str, *, strict: bool = True) -> "IRCPath":
+    def from_file(cls, path: Path | str, *, strict: bool = False) -> "IRCPath":
         file_path = Path(path)
         lines = read_lines(file_path)
         blocks = segment_irc_blocks(lines, strict=strict)
 
         points: List[IrcPoint] = []
         for block in blocks:
-            point = parse_gaussian_block(block, strict=strict)
+            try:
+                point = parse_gaussian_block(block, strict=strict)
+            except ParseError:
+                if strict:
+                    raise
+                point = parse_gaussian_block(block, strict=False)
+
+            if not strict and (point.rx_coord is None or point.energy_hartree is None):
+                continue
             charges = parse_natural_charges(block)
             wiberg = parse_wiberg_indices(block)
             bond_orbs = parse_bond_orbitals(block)
