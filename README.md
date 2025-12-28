@@ -6,11 +6,6 @@ Kudi is a Python package for extracting key properties from Gaussian intrinsic r
 - Gaussian IRC outputs that contain single-point computations along a reaction path
 - Optional Natural Bond Orbital (NBO) analysis sections within the same Gaussian output
 
-## Not supported
-- ORCA outputs
-- Density data generation
-- Plotting utilities or automatic file writes
-
 ## Installation
 
 Install in editable mode for development:
