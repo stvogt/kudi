@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from kudi import IRCPath
@@ -47,3 +48,36 @@ def test_nbo_accessors_align(irc_blocks, irc_path_obj):
     orbital_keys = list(parse_bond_orbitals(block_with_orbitals).keys()) if block_with_orbitals else []
     bond_orbitals = irc_path_obj.bond_orbitals(orbital_keys or None)
     assert all(len(values) == len(irc_path_obj.points) for values in bond_orbitals.values())
+
+
+def test_reaction_force_outputs_align(irc_path_obj):
+    result = irc_path_obj.reaction_force()
+
+    assert len(result["reaction_coordinate"]) == len(irc_path_obj.points)
+    assert len(result["reaction_force"]) == len(irc_path_obj.points)
+    assert result["reaction_force"].dtype.kind in {"f"}
+
+
+def test_reaction_force_constant_outputs_align(irc_path_obj):
+    result = irc_path_obj.reaction_force_constant()
+
+    assert len(result["reaction_coordinate"]) == len(irc_path_obj.points)
+    assert len(result["reaction_force_constant"]) == len(irc_path_obj.points)
+    assert result["reaction_force_constant"].dtype.kind in {"f"}
+
+
+def test_chemical_potential_koopmans(irc_path_obj):
+    result = irc_path_obj.chemical_potential_koopmans()
+
+    assert len(result["reaction_coordinate"]) == len(irc_path_obj.points)
+    assert len(result["chemical_potential"]) == len(irc_path_obj.points)
+    assert result["chemical_potential"].dtype.kind in {"f"}
+    assert not np.all(np.isnan(result["chemical_potential"]))
+
+
+def test_flux_outputs_align(irc_path_obj):
+    result = irc_path_obj.flux()
+
+    assert len(result["reaction_coordinate"]) == len(irc_path_obj.points)
+    assert len(result["flux"]) == len(irc_path_obj.points)
+    assert result["flux"].dtype.kind in {"f"}
