@@ -5,13 +5,15 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional
 
+import numpy as np
+
 from ..exceptions import ParseError
 from ..io import read_lines
 from ..models import IrcPoint, NboBondOrbital
 from ..parsing.gaussian import parse_gaussian_block
 from ..parsing.irc import segment_irc_blocks
 from ..parsing.nbo import parse_bond_orbitals, parse_natural_charges, parse_wiberg_indices
-from .numerics import relative_energies
+from .numerics import HARTREE_TO_KCAL_MOL, differentiate, relative_energies
 
 
 class IRCPath:
@@ -75,6 +77,62 @@ class IRCPath:
 
     def relative_energies_kcal(self, *, reference: str = "min_rx") -> List[float]:
         return relative_energies(self.points, reference=reference)
+
+    def reaction_force(self) -> Dict[str, np.ndarray]:
+        """Compute the reaction force ``-dE/dξ`` along the IRC.
+
+        Energies are converted from Hartree to kcal/mol prior to differentiation
+        so the force is reported in kcal/mol per reaction coordinate unit.
+        """
+
+        rx = np.asarray(self.rx_coords, dtype=float)
+        energies = np.asarray(self.energies_hartree, dtype=float)
+
+        if np.isnan(rx).any():
+            raise ValueError("Missing reaction coordinates for reaction force computation")
+        if np.isnan(energies).any():
+            raise ValueError("Missing energies for reaction force computation")
+
+        energy_kcal = energies * HARTREE_TO_KCAL_MOL
+        force = -differentiate(rx, energy_kcal)
+        return {"reaction_coordinate": rx, "reaction_force": force}
+
+    def reaction_force_constant(self) -> Dict[str, np.ndarray]:
+        """Compute the reaction force constant ``-dF/dξ`` along the IRC."""
+
+        force_data = self.reaction_force()
+        kappa = -differentiate(force_data["reaction_coordinate"], force_data["reaction_force"])
+        return {"reaction_coordinate": force_data["reaction_coordinate"], "reaction_force_constant": kappa}
+
+    def chemical_potential_koopmans(self) -> Dict[str, np.ndarray]:
+        """Compute the Koopmans chemical potential ``(HOMO + LUMO) / 2``.
+
+        HOMO and LUMO orbital energies are expected in Hartree and converted to
+        kcal/mol for the returned values. Missing orbital data are represented
+        as ``np.nan``.
+        """
+
+        rx = np.asarray(self.rx_coords, dtype=float)
+        if np.isnan(rx).any():
+            raise ValueError("Missing reaction coordinates for chemical potential computation")
+
+        mu_values = []
+        for point in self.points:
+            homo = max(point.occ_orbitals) if point.occ_orbitals else None
+            lumo = min(point.virt_orbitals) if point.virt_orbitals else None
+            if homo is None or lumo is None:
+                mu_values.append(np.nan)
+            else:
+                mu_values.append(0.5 * (homo + lumo) * HARTREE_TO_KCAL_MOL)
+
+        return {"reaction_coordinate": rx, "chemical_potential": np.asarray(mu_values, dtype=float)}
+
+    def flux(self) -> Dict[str, np.ndarray]:
+        """Compute the flux ``-dμ/dξ`` from the Koopmans chemical potential."""
+
+        mu_data = self.chemical_potential_koopmans()
+        flux_values = -differentiate(mu_data["reaction_coordinate"], mu_data["chemical_potential"])
+        return {"reaction_coordinate": mu_data["reaction_coordinate"], "flux": flux_values}
 
     def nbo_charges(self, atom_labels: Optional[Iterable[str]] = None) -> Dict[str, List[Optional[float]]]:
         labels = set(atom_labels) if atom_labels is not None else set()

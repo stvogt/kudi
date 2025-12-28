@@ -44,3 +44,7 @@ irc = IRCPath.from_file(Path("path/to/irc_output.log"))
 print(irc.rx_coords)
 print(irc.relative_energies_kcal())
 ```
+
+## Derived IRC quantities
+
+The :class:`~kudi.IRCPath` API also exposes reaction force, reaction force constant, Koopmans chemical potential, and flux as arrays aligned with the reaction coordinate for direct plotting in notebooks.
