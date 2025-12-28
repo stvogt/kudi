@@ -1,50 +1,33 @@
-<img src="./KudiLogo.png" alt="drawing" width="300"/>
+# Kudi
 
-Kudi: An open-source python library for the analysis of properties along reaction paths
-=======
+Kudi is a Python package for extracting key properties from Gaussian intrinsic reaction coordinate (IRC) output files. The library focuses on pure data extraction and analysis so it can be used from scripts or notebooks without side effects.
 
+## Supported inputs
+- Gaussian IRC outputs that contain single-point computations along a reaction path
+- Optional Natural Bond Orbital (NBO) analysis sections within the same Gaussian output
 
-### Overview
-Kudi is a tool that allows effortless extraction of chemically relevant data along 
-a reaction path of a chemical reaction. It is build in python 3 and its straightforward structure makes userfriendly and allows for effortless implementation of new capabilities, and extension to any quantum chemistry package. Currently Kudi can be used in conjunction with Orca4.0 and Gaussian09
+## Not supported
+- ORCA outputs
+- Density data generation
+- Plotting utilities or automatic file writes
 
-### Install Kudi
+## Installation
 
+Install in editable mode for development:
 
+```bash
+pip install -e .
+```
 
-**git clone https://github.com/stvogt/kudi**
+## Usage
 
-**cd /path/to/kudi**
+Parse an IRC output and access energies, geometries, and NBO-derived properties:
 
-Install within your prefered python environment:
+```python
+from pathlib import Path
+from kudi import IRCPath
 
-**python setup.py install**
-
-### Data pre-processing
-
-The Kudi objects containing all the reaction path data, is initialized with an output file.
-This output file contains a series of single point computations, one for each point 
-of the reaction path. This file has a special structure and needs to be created using 
-a kudi pre-processing script. 
-
-1. From an existing IRC or relaxed scan output file.
-
-Use the **make_sp** script  to create the input_sp.dat file that can be run with the electronic structure package (e.g. Orca or 
-Gaussian). To list the different options run (**python make_sp_g09.py -h**). This will create an input file of single point computations for each reaction coordinate structure. This file  contains
-the lines: 
-
-"Single Point computation for reaction coordinate: " 
-
-followed by the corresponding reaction coordinate of the single point computation. The resulting output_sp.dat file can
-then be used as an input for Kudi. 
-
-2. From an transition state structure
-
-If you only have a optimized transition state structure and have not yet obtained the reaction path, Kudi can help you
-generate the IRC or output file, with the **make_irc_g09.py** script. To check the options run **python make_irc_g09.py-h**
-in your shell.
-
-
-### Using Kudi
-
-In the [tutorials folder](https://github.com/stvogt/kudi/tree/master/tutorials) there are several tutorials that ilustrates the capabilities of Kudi. A complete Manual is currently under construction. 
+irc = IRCPath.from_file(Path("path/to/irc_output.log"))
+print(irc.rx_coords)
+print(irc.relative_energies_kcal())
+```
