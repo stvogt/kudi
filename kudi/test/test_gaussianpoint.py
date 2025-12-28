@@ -1,17 +1,12 @@
+from pathlib import Path
+
 from ..programs import gaussian
 
 
 def get_scf_lines():
-    file_path = "./test/gau_out.dat"
-    try:
-        with open(file_path, "r") as file:
-            # Read and process the contents of the file here
-            lines = file.readlines()
-    except FileNotFoundError:
-        print(f"The file '{file_path}' does not exist.")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-    return lines
+    file_path = Path(__file__).with_name("gau_out.dat")
+    with file_path.open("r") as file:
+        return file.readlines()
 
 
 lines = get_scf_lines()
