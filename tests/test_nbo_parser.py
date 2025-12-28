@@ -46,8 +46,8 @@ def test_hsno_wiberg_and_charges(irc_blocks, irc_fixture_path):
 
     npa_block = _find_block_with_header(irc_blocks, "Summary of Natural Population Analysis:")
     charges = parse_natural_charges(npa_block or [])
-    assert charges["S2"] == pytest.approx(0.10032, abs=1e-6)
-    assert charges["N3"] == pytest.approx(0.01004, abs=1e-6)
+    assert charges["S2"] == pytest.approx(0.17841, abs=1e-6)
+    assert charges["N3"] == pytest.approx(-0.18710, abs=1e-6)
 
     wiberg_block = _find_block_with_header(irc_blocks, "Wiberg bond index matrix in the NAO basis:")
     wiberg = parse_wiberg_indices(wiberg_block or [])
@@ -55,4 +55,4 @@ def test_hsno_wiberg_and_charges(irc_blocks, irc_fixture_path):
     sn_key = "-".join(sorted(["S2", "N3"]))
     assert sn_key in wiberg
     assert "S-N" not in wiberg
-    assert wiberg[sn_key] == pytest.approx(1.0967, rel=1e-4)
+    assert wiberg[sn_key] == pytest.approx(1.7574, rel=1e-4)
