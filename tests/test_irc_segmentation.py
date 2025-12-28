@@ -3,7 +3,7 @@ from kudi.parsing.irc import extract_rx_from_anchor_line
 
 def test_segment_irc_blocks_counts_blocks(irc_blocks):
     anchor = "Single Point computation for reaction coordinate:"
-    assert len(irc_blocks) > 20
+    assert len(irc_blocks) > 1
 
     rx_coords = []
     for block in irc_blocks:
@@ -14,6 +14,10 @@ def test_segment_irc_blocks_counts_blocks(irc_blocks):
     assert len(rx_coords) == len(irc_blocks)
     assert all(isinstance(rx, float) for rx in rx_coords)
     assert any(rx != rx_coords[0] for rx in rx_coords[1:])
+    diffs = [b - a for a, b in zip(rx_coords, rx_coords[1:])]
+    monotonic_increasing = all(diff >= 0 for diff in diffs)
+    monotonic_decreasing = all(diff <= 0 for diff in diffs)
+    assert monotonic_increasing or monotonic_decreasing
 
 
 def test_extract_rx_from_anchor_line_parses_float():

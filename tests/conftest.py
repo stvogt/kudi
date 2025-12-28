@@ -8,10 +8,16 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+FIXTURE_DIR = ROOT / "tests" / "fixtures"
+IRC_FIXTURES = [
+    pytest.param(FIXTURE_DIR / "cf3+f.dat", id="cf3+f"),
+    pytest.param(FIXTURE_DIR / "hsno_iso.dat", id="hsno_iso"),
+]
 
-@pytest.fixture(scope="session")
-def irc_fixture_path() -> Path:
-    return ROOT / "tests" / "fixtures" / "output_sp.dat"
+
+@pytest.fixture(scope="session", params=IRC_FIXTURES)
+def irc_fixture_path(request) -> Path:
+    return request.param
 
 
 @pytest.fixture(scope="session")
