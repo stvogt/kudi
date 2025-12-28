@@ -16,7 +16,25 @@ Kudi is a Python package for extracting key properties from Gaussian intrinsic r
 Install in editable mode for development:
 
 ```bash
-pip install -e .
+pip install -e ".[dev]"
+```
+
+Install for regular use:
+
+```bash
+pip install .
+```
+
+Install with notebook tooling:
+
+```bash
+pip install -e ".[notebook]"
+```
+
+Run the test suite after installing development extras:
+
+```bash
+pytest
 ```
 
 ## Usage
