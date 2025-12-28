@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Kudi Contributors" }]
 license = { file = "LICENSE" }
-dependencies = []
+dependencies = ["numpy>=1.23"]
 
 [project.optional-dependencies]
 dev = [

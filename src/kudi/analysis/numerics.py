@@ -2,11 +2,47 @@
 
 from __future__ import annotations
 
-from typing import Iterable, List
+from typing import Iterable, List, Sequence
+
+import numpy as np
 
 from ..models import IrcPoint
 
 HARTREE_TO_KCAL_MOL = 627.509474
+
+
+def differentiate(x: Sequence[float], y: Sequence[float]) -> np.ndarray:
+    """Return ``dy/dx`` using :func:`numpy.gradient`.
+
+    Parameters
+    ----------
+    x, y:
+        One-dimensional sequences of equal length. ``x`` must be monotonic
+        (non-decreasing or non-increasing). ``len(x)`` must be at least 3.
+
+    Returns
+    -------
+    numpy.ndarray
+        Derivative values aligned with the input coordinates.
+    """
+
+    x_arr = np.asarray(x, dtype=float)
+    y_arr = np.asarray(y, dtype=float)
+
+    if x_arr.shape != y_arr.shape:
+        raise ValueError("x and y must have the same shape for differentiation")
+    if x_arr.ndim != 1:
+        raise ValueError("x and y must be one-dimensional")
+    if x_arr.size < 3:
+        raise ValueError("Differentiation requires at least three points")
+
+    diffs = np.diff(x_arr)
+    monotonic_increasing = np.all(diffs >= 0)
+    monotonic_decreasing = np.all(diffs <= 0)
+    if not (monotonic_increasing or monotonic_decreasing):
+        raise ValueError("x must be monotonic for differentiation")
+
+    return np.gradient(y_arr, x_arr)
 
 
 def relative_energies(points: Iterable[IrcPoint], *, reference: str = "min_rx") -> List[float]:
