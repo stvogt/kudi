@@ -1,23 +1,46 @@
 [build-system]
-requires = ["setuptools>=61", "wheel"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "kudi"
-version = "0.1.0"
+version = "0.3.0"
 description = "Gaussian IRC parser and analysis utilities"
-authors = [{name = "Kudi Contributors"}]
 readme = "README.md"
 requires-python = ">=3.10"
+authors = [{ name = "Kudi Contributors" }]
+license = { file = "LICENSE" }
 dependencies = []
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7",
+    "pytest-cov>=4",
+    "ruff>=0.4",
+    "black>=23",
+    "mypy>=1.5",
+]
+notebook = [
+    "jupyterlab>=4",
+    "ipykernel>=6",
+    "matplotlib>=3",
 ]
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = ["--ignore=kudi/test"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+include = "\\.pyi?$"
