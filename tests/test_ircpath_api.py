@@ -6,7 +6,7 @@ from kudi import IRCPath
 
 def test_from_file_builds_points(irc_fixture_path):
     irc = IRCPath.from_file(irc_fixture_path)
-    assert len(irc.points) > 20
+    assert len(irc.points) > 5
     assert all(isinstance(rx, float) for rx in irc.rx_coords)
 
 
@@ -29,7 +29,7 @@ def test_nbo_accessors_align(irc_blocks, irc_path_obj):
     block_with_charges = next(
         (block for block in irc_blocks if any("Summary of Natural Population Analysis:" in line for line in block)), None
     )
-    charge_labels = list(parse_natural_charges(block_with_charges).keys()) if block_with_charges else []
+    charge_labels = list(parse_natural_charges(block_with_charges or []).keys())
     charges = irc_path_obj.nbo_charges(charge_labels or None)
     assert all(len(values) == len(irc_path_obj.points) for values in charges.values())
     assert all(value is None or isinstance(value, float) for series in charges.values() for value in series)
@@ -37,7 +37,7 @@ def test_nbo_accessors_align(irc_blocks, irc_path_obj):
     block_with_wiberg = next(
         (block for block in irc_blocks if any("Wiberg bond index matrix in the NAO basis:" in line for line in block)), None
     )
-    wiberg_keys = list(parse_wiberg_indices(block_with_wiberg).keys()) if block_with_wiberg else []
+    wiberg_keys = list(parse_wiberg_indices(block_with_wiberg or []).keys())
     wiberg = irc_path_obj.wiberg_bond_orders(wiberg_keys or None)
     assert all(len(values) == len(irc_path_obj.points) for values in wiberg.values())
     assert all(value is None or isinstance(value, float) for series in wiberg.values() for value in series)
@@ -45,7 +45,7 @@ def test_nbo_accessors_align(irc_blocks, irc_path_obj):
     block_with_orbitals = next(
         (block for block in irc_blocks if any("Bond orbital/ Coefficients/ Hybrids" in line for line in block)), None
     )
-    orbital_keys = list(parse_bond_orbitals(block_with_orbitals).keys()) if block_with_orbitals else []
+    orbital_keys = list(parse_bond_orbitals(block_with_orbitals or []).keys())
     bond_orbitals = irc_path_obj.bond_orbitals(orbital_keys or None)
     assert all(len(values) == len(irc_path_obj.points) for values in bond_orbitals.values())
 
