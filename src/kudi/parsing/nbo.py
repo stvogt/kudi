@@ -71,7 +71,8 @@ def parse_wiberg_indices(block: List[str]) -> Dict[str, float]:
         parts = line.split()
         row_token = _normalize(parts[0]) if parts else ""
         if len(parts) >= 2 and row_token.isdigit():
-            row_map[row_token] = parts[1]
+            symbol = parts[1]
+            row_map[row_token] = f"{symbol}{row_token}"
 
     for line in data_lines:
         parts = line.split()
