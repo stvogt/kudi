@@ -6,6 +6,7 @@ from typing import List
 from ..exceptions import ParseError
 
 ANCHOR = "Single Point computation for reaction coordinate:"
+ANCHOR_PATTERN = re.compile(r"^\s*" + re.escape(ANCHOR), re.IGNORECASE)
 
 
 def extract_rx_from_anchor_line(line: str) -> float:
@@ -33,7 +34,7 @@ def segment_irc_blocks(lines: List[str], *, strict: bool = True) -> List[List[st
 
     anchor_indices: List[int] = []
     for idx, line in enumerate(lines):
-        if ANCHOR in line:
+        if ANCHOR_PATTERN.search(line):
             anchor_indices.append(idx)
 
     if not anchor_indices:
