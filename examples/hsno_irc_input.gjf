@@ -1,0 +1,30 @@
+%NProcShared=8
+%Mem=8GB
+%Chk=hsno_irc.chk
+
+#P wb97xd/def2TZVP scf=tight Int=UltraFine irc=(Reverse,MaxPoints=40,StepSize=8,MaxCycle=40,CalcFC,Phase=(1,2),VeryTight)
+
+HSNO IRC example
+
+0 1
+H 0.973640 -0.671980 0.000000
+S -0.692830 -0.671470 0.000000
+N 0.000000 0.848970 0.000000
+O 1.263950 0.684090 0.000000
+
+--Link1--
+
+%NProcShared=8
+%Mem=8GB
+%Chk=hsno_irc.chk
+
+#P wb97xd/def2TZVP scf=tight Int=UltraFine irc=(Forward,MaxPoints=40,StepSize=8,MaxCycle=40,CalcFC,Phase=(1,2),VeryTight)
+
+HSNO IRC example
+
+0 1
+H 0.973640 -0.671980 0.000000
+S -0.692830 -0.671470 0.000000
+N 0.000000 0.848970 0.000000
+O 1.263950 0.684090 0.000000
+
