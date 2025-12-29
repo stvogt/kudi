@@ -45,6 +45,28 @@ print(irc.rx_coords)
 print(irc.relative_energies_kcal())
 ```
 
+## Example Gaussian IRC input
+
+The repository includes a ready-to-run dual-direction Gaussian IRC input for the
+HSNO geometry at `examples/hsno_irc_input.gjf`. It was generated from the XYZ
+coordinates in `examples/hsno.xyz` with a WB97XD/def2TZVP route, tight SCF, an
+UltraFine grid, and VeryTight IRC convergence.
+
+You can regenerate the file (or produce your own) with the CLI:
+
+```bash
+python driver/make_irc.py \
+  --xyz examples/hsno.xyz \
+  --method wb97xd --basis def2TZVP \
+  --route-extra "scf=tight Int=UltraFine" \
+  --maxpoints 40 --stepsize 8 --maxcycle 40 --phase 1 2 \
+  --verytight --fc CalcFC --chk hsno_irc.chk --mem 8GB \
+  --outdir examples --title "HSNO IRC example"
+```
+
+By default this writes a two-Link1 input (`input_irc.dat`) containing reverse
+and forward paths.
+
 ## Derived IRC quantities
 
 The :class:`~kudi.IRCPath` API also exposes reaction force, reaction force constant, Koopmans chemical potential, and flux as arrays aligned with the reaction coordinate for direct plotting in notebooks.
