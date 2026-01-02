@@ -4,10 +4,7 @@ from __future__ import annotations
 
 from typing import Iterable, List, Sequence
 
-try:
-    import numpy as np
-except ModuleNotFoundError as exc:
-    raise ImportError("NumPy is required for numeric analyses. Please install numpy.") from exc
+import numpy as np
 
 from ..models import IrcPoint
 
@@ -15,13 +12,17 @@ HARTREE_TO_KCAL_MOL = 627.509474
 
 
 def differentiate(x: Sequence[float], y: Sequence[float]) -> np.ndarray:
-    """Return ``dy/dx`` using :func:`numpy.gradient`.
+    """Return ``dy/dx`` using second-order endpoint stencils.
+
+    Endpoint derivatives follow the second-order one-sided formulas used by
+    ``numpy.gradient(..., edge_order=2)`` on uniform grids.
 
     Parameters
     ----------
     x, y:
-        One-dimensional sequences of equal length. ``x`` must be monotonic
-        (non-decreasing or non-increasing). ``len(x)`` must be at least 3.
+        One-dimensional sequences of equal length. ``x`` must be strictly
+        monotonic (strictly increasing or strictly decreasing). ``len(x)``
+        must be at least 3.
 
     Returns
     -------
@@ -40,12 +41,27 @@ def differentiate(x: Sequence[float], y: Sequence[float]) -> np.ndarray:
         raise ValueError("Differentiation requires at least three points")
 
     diffs = np.diff(x_arr)
-    monotonic_increasing = np.all(diffs >= 0)
-    monotonic_decreasing = np.all(diffs <= 0)
+    monotonic_increasing = np.all(diffs > 0)
+    monotonic_decreasing = np.all(diffs < 0)
     if not (monotonic_increasing or monotonic_decreasing):
         raise ValueError("x must be monotonic for differentiation")
 
-    return np.gradient(y_arr, x_arr)
+    dy = np.empty_like(x_arr, dtype=float)
+
+    h0 = x_arr[1] - x_arr[0]
+    h1 = x_arr[-1] - x_arr[-2]
+    if h0 == 0 or h1 == 0:
+        raise ValueError("x must have non-zero spacing at endpoints")
+
+    # Endpoints use second-order one-sided differences to match NumPy's
+    # ``gradient(..., edge_order=2)`` behavior on uniform grids.
+    dy[0] = (-3 * y_arr[0] + 4 * y_arr[1] - y_arr[2]) / (2 * h0)
+    dy[-1] = (3 * y_arr[-1] - 4 * y_arr[-2] + y_arr[-3]) / (2 * h1)
+
+    for i in range(1, x_arr.size - 1):
+        dy[i] = (y_arr[i + 1] - y_arr[i - 1]) / (x_arr[i + 1] - x_arr[i - 1])
+
+    return dy
 
 
 def relative_energies(points: Iterable[IrcPoint], *, reference: str = "min_rx") -> List[float]:
