@@ -1,6 +1,12 @@
 # Kudi
 
-Kudi is a Python package for extracting key properties from Gaussian intrinsic reaction coordinate (IRC) output files. The library focuses on pure data extraction and analysis so it can be used from scripts or notebooks without side effects.
+<p align="center">
+  <img src="KudiLogo.png" alt="Kudi logo" width="220">
+</p>
+
+## What is Kudi?
+
+Kudi is a Python package for extracting key properties from Gaussian intrinsic reaction coordinate (IRC) single-point outputs. It parses IRC geometries and energies and exposes analysis-friendly access to properties as functions of the reaction coordinate (`rx`), with notebooks and tutorials to guide typical workflows.
 
 ## Supported inputs
 - Gaussian IRC outputs that contain single-point computations along a reaction path
@@ -32,17 +38,17 @@ Run the test suite after installing development extras:
 pytest
 ```
 
-## Usage
+## Quickstart
 
-Parse an IRC output and access energies, geometries, and NBO-derived properties:
+Parse an IRC output and access energies, forces, and electronic properties with the `IRCPath` API:
 
 ```python
-from pathlib import Path
 from kudi import IRCPath
 
-irc = IRCPath.from_file(Path("path/to/irc_output.log"))
-print(irc.rx_coords)
-print(irc.relative_energies_kcal())
+path = IRCPath.from_file("path/to/irc_output.log")
+energies = path.relative_energies_kcal()
+force = path.reaction_force()
+mu = path.chemical_potential_koopmans()
 ```
 
 ## Example Gaussian IRC input
@@ -67,6 +73,24 @@ python driver/make_irc.py \
 By default this writes a two-Link1 input (`input_irc.dat`) containing reverse
 and forward paths.
 
-## Derived IRC quantities
+## Implemented properties along reaction coordinate
 
-The :class:`~kudi.IRCPath` API also exposes reaction force, reaction force constant, Koopmans chemical potential, and flux as arrays aligned with the reaction coordinate for direct plotting in notebooks.
+| Property (vs rx) | API |
+|---|---|
+| Relative energy (kcal/mol) | `IRCPath.relative_energies_kcal(...)` |
+| Reaction force (kcal/mol·rx⁻¹) | `IRCPath.reaction_force()` |
+| Reaction force constant | `IRCPath.reaction_force_constant()` |
+| Koopmans chemical potential (kcal/mol) | `IRCPath.chemical_potential_koopmans()` |
+| Flux (−dμ/dξ) | `IRCPath.flux()` |
+| NBO charges | `IRCPath.nbo_charges(...)` |
+| Wiberg bond orders | `IRCPath.wiberg_bond_orders(...)` |
+| Bond orbitals | `IRCPath.bond_orbitals(...)` |
+
+All quantities are aligned with `reaction_coordinate` arrays for direct plotting or further numerical analysis.
+
+## Tutorials
+
+Explore worked examples in the tutorials directory:
+
+- [CF₃ + F reaction: energies, forces, and flux](tutorials/tutorial_cf3f.ipynb)
+- [HSNO isomerization: energies, forces, NBO charges, and Wiberg bond orders](tutorials/tutorial_hsno_isomerization.ipynb)
