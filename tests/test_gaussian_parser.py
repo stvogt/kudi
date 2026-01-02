@@ -43,3 +43,16 @@ def test_non_strict_allows_missing_data():
     point = parse_gaussian_block(empty_block, strict=False)
     assert point.rx_coord is None
     assert point.energy_hartree is None
+
+
+def test_energy_prefers_last_occurrence():
+    block = [
+        " Single Point computation for reaction coordinate:   0.0000",
+        " SCF Done:  E(RB3LYP) =   -100.100100",
+        " Random iteration data",
+        " SCF Done:  E(RB3LYP) =   -100.200200",
+    ]
+
+    point = parse_gaussian_block(block)
+
+    assert point.energy_hartree == pytest.approx(-100.2002)

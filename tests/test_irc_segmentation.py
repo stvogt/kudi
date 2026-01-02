@@ -1,4 +1,4 @@
-from kudi.parsing.irc import extract_rx_from_anchor_line
+from kudi.parsing.irc import extract_rx_from_anchor_line, segment_irc_blocks
 
 
 def test_segment_irc_blocks_counts_blocks(irc_blocks):
@@ -23,3 +23,22 @@ def test_segment_irc_blocks_counts_blocks(irc_blocks):
 def test_extract_rx_from_anchor_line_parses_float():
     line = " Single Point computation for reaction coordinate:   -0.1000"
     assert extract_rx_from_anchor_line(line) == -0.1
+
+
+def test_segment_handles_blank_lines_and_trailing_text():
+    lines = [
+        "header",
+        "",
+        " Single Point computation for reaction coordinate:   -0.5000",
+        " data line a",
+        "",
+        " Single Point computation for reaction coordinate:   0.0000",
+        " data line b",
+        " tail",
+    ]
+
+    blocks = segment_irc_blocks(lines)
+
+    assert len(blocks) == 2
+    assert blocks[0][0].strip().startswith("Single Point computation")
+    assert blocks[-1][-1].strip() == "tail"

@@ -79,12 +79,13 @@ def _find_reaction_coordinate(block: List[str]) -> Optional[float]:
 
 
 def _find_energy(block: List[str]) -> Optional[float]:
-    energy_pattern = re.compile(r"SCF Done:\s+E\(.+?\)\s*=\s*(-?\d+\.\d+)")
+    energy_pattern = re.compile(r"SCF Done:\s+E\(.+?\)\s*=\s*(-?\d+\.\d+)", re.IGNORECASE)
+    energy: Optional[float] = None
     for line in block:
         match = energy_pattern.search(line)
         if match:
-            return float(match.group(1))
-    return None
+            energy = float(match.group(1))
+    return energy
 
 
 def _collect_orbitals(block: List[str], marker: str) -> List[float]:

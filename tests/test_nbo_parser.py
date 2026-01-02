@@ -56,3 +56,44 @@ def test_hsno_wiberg_and_charges(irc_blocks, irc_fixture_path):
     assert sn_key in wiberg
     assert "S-N" not in wiberg
     assert wiberg[sn_key] == pytest.approx(1.7574, rel=1e-4)
+
+
+@pytest.mark.parametrize(
+    "block, parser, expectation",
+    [
+        (
+            [
+                "SUMMARY OF NATURAL POPULATION ANALYSIS:",
+                " 1 C   -0.12",
+                " 2 H    0.05",
+                "",
+            ],
+            parse_natural_charges,
+            lambda result: result["C1"] == pytest.approx(-0.12),
+        ),
+        (
+            [
+                "WIBERG BOND INDEX MATRIX IN THE NAO BASIS",
+                "    1   2",
+                " 1 C   0.00  0.91",
+                " 2 H   0.91  0.00",
+                "",
+            ],
+            parse_wiberg_indices,
+            lambda result: result["C1-H2"] == pytest.approx(0.91, rel=1e-6),
+        ),
+        (
+            [
+                " Bond orbital/  Coefficients/   Hybrids",
+                "  1. BD   ( 1) H      1 - C      1    1.9990",
+                "",
+            ],
+            parse_bond_orbitals,
+            lambda result: result["H1-C1"].occupancy == pytest.approx(1.999),
+        ),
+    ],
+)
+def test_nbo_parsers_accept_header_variants(block, parser, expectation):
+    parsed = parser(block)
+    assert parsed
+    assert expectation(parsed)
