@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from typing import Iterable, List, Sequence
 
-import numpy as np
+try:
+    import numpy as np
+except ModuleNotFoundError as exc:
+    raise ImportError("NumPy is required for numeric analyses. Please install numpy.") from exc
 
 from ..models import IrcPoint
 

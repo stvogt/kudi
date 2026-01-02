@@ -25,6 +25,7 @@ notebook = [
     "ipykernel>=6",
     "matplotlib>=3",
 ]
+test = ["numpy>=1.23"]
 
 [tool.setuptools]
 package-dir = { "" = "src" }

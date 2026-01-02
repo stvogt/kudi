@@ -5,7 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional
 
-import numpy as np
+try:
+    import numpy as np
+except ModuleNotFoundError as exc:
+    raise ImportError("NumPy is required for IRC analysis. Please install numpy.") from exc
 
 from ..exceptions import ParseError
 from ..io import read_lines

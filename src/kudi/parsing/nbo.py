@@ -8,10 +8,15 @@ from typing import Dict, List
 from ..models import NboBondOrbital
 
 
+def _find_header_index(block: List[str], pattern: str) -> int:
+    compiled = re.compile(pattern, re.IGNORECASE)
+    return next(i for i, line in enumerate(block) if compiled.search(line))
+
+
 def parse_natural_charges(block: List[str]) -> Dict[str, float]:
     charges: Dict[str, float] = {}
     try:
-        start = next(i for i, line in enumerate(block) if "Summary of Natural Population Analysis:" in line)
+        start = _find_header_index(block, r"summary of natural population analysis")
     except StopIteration:
         return charges
 
@@ -43,7 +48,7 @@ def parse_natural_charges(block: List[str]) -> Dict[str, float]:
 def parse_wiberg_indices(block: List[str]) -> Dict[str, float]:
     bonds: Dict[str, float] = {}
     try:
-        start = next(i for i, line in enumerate(block) if "Wiberg bond index matrix in the NAO basis:" in line)
+        start = _find_header_index(block, r"wiberg bond index matrix in the nao basis")
     except StopIteration:
         return bonds
 
@@ -100,7 +105,7 @@ def parse_wiberg_indices(block: List[str]) -> Dict[str, float]:
 def parse_bond_orbitals(block: List[str]) -> Dict[str, NboBondOrbital]:
     orbitals: Dict[str, NboBondOrbital] = {}
     try:
-        start = next(i for i, line in enumerate(block) if "Bond orbital/ Coefficients/ Hybrids" in line)
+        start = _find_header_index(block, r"bond orbital/\s*coefficients/\s*hybrids")
     except StopIteration:
         return orbitals
 
