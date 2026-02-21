@@ -14,6 +14,7 @@ from ..exceptions import ParseError
 from ..io import read_lines
 from ..models import IrcPoint, NboBondOrbital
 from ..parsing.gaussian import parse_gaussian_block
+from ..parsing.geometric import parse_geometric_irc_xyz
 from ..parsing.irc import segment_irc_blocks
 from ..parsing.nbo import parse_bond_orbitals, parse_natural_charges, parse_wiberg_indices
 from .numerics import HARTREE_TO_KCAL_MOL, differentiate, relative_energies
@@ -25,9 +26,23 @@ class IRCPath:
         self.points = points
 
     @classmethod
-    def from_file(cls, path: Path | str, *, strict: bool = False) -> "IRCPath":
+    def from_file(
+        cls, path: Path | str, *, strict: bool = False, format: str = "gaussian"
+    ) -> "IRCPath":
         file_path = Path(path)
         lines = read_lines(file_path)
+
+        if format == "auto":
+            format = _detect_format(lines)
+
+        if format in {"geometric", "geometric_xyz"}:
+            points = parse_geometric_irc_xyz(lines, strict=strict)
+            if strict and not points:
+                raise ParseError("No IRC points parsed from file")
+            return cls(file_path, points)
+        if format != "gaussian":
+            raise ValueError("Unsupported format. Use 'gaussian', 'geometric_xyz', or 'auto'.")
+
         blocks = segment_irc_blocks(lines, strict=strict)
 
         points: List[IrcPoint] = []
@@ -77,6 +92,13 @@ class IRCPath:
     @property
     def geometries(self):
         return [point.geometry for point in self.points]
+
+    def to_qcel_molecule(self, index: int, *, charge: int = 0, multiplicity: int = 1):
+        """Convert one IRC point geometry to a QCElemental Molecule."""
+
+        from ..qcfractal.molecules import molecule_from_irc_point
+
+        return molecule_from_irc_point(self.points[index], charge=charge, multiplicity=multiplicity)
 
     def relative_energies_kcal(self, *, reference: str = "min_rx") -> List[float]:
         return relative_energies(self.points, reference=reference)
@@ -178,3 +200,16 @@ class IRCPath:
 
 
 ReactionPath = IRCPath
+
+
+def _detect_format(lines: List[str]) -> str:
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        try:
+            int(stripped)
+            return "geometric_xyz"
+        except ValueError:
+            return "gaussian"
+    return "gaussian"

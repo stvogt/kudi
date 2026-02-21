@@ -32,6 +32,12 @@ Install with notebook tooling:
 pip install -e ".[notebook]"
 ```
 
+Install with QCFractal helpers:
+
+```bash
+pip install -e ".[qcfractal]"
+```
+
 Run the test suite after installing development extras:
 
 ```bash
@@ -49,6 +55,14 @@ path = IRCPath.from_file("path/to/irc_output.log")
 energies = path.relative_energies_kcal()
 force = path.reaction_force()
 mu = path.chemical_potential_koopmans()
+```
+
+Parse geomeTRIC IRC trajectories (`*_irc.xyz`) with explicit format selection:
+
+```python
+from kudi import IRCPath
+
+path = IRCPath.from_file("path/to/job_irc.xyz", format="geometric_xyz")
 ```
 
 ## Example Gaussian IRC input
@@ -94,3 +108,30 @@ Explore worked examples in the tutorials directory:
 
 - [CF₃ + F reaction: energies, forces, and flux](tutorials/tutorial_cf3f.ipynb)
 - [HSNO isomerization: energies, forces, NBO charges, and Wiberg bond orders](tutorials/tutorial_hsno_isomerization.ipynb)
+
+## QCFractal single-point helpers
+
+Kudi includes an optional QCFractal integration layer for submitting and monitoring
+single-point records.
+
+Example submit from XYZ:
+
+```bash
+python driver/kudi_qcf.py sp submit \
+  --xyz examples/hsno.xyz \
+  --program psi4 \
+  --method b3lyp \
+  --basis def2-svp \
+  --tag cm.agent.sp.prod \
+  --connection /home/zuse/qcfractal/connection.yaml
+```
+
+Example status query:
+
+```bash
+python driver/kudi_qcf.py sp status 12345 12346 \
+  --connection /home/zuse/qcfractal/connection.yaml
+```
+
+The compute tag is validated against the convention
+`cm.<agent>.<purpose>.<env>` with lowercase `[a-z0-9._-]`.
