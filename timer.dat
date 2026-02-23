@@ -1,0 +1,101 @@
+
+Host: sudarshan
+
+Timers On : Sat Feb 21 18:11:10 2026
+Timers Off: Sat Feb 21 18:11:10 2026
+
+Wall Time:        0.30 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+
+--------------------------------------------------------------------------------------
+
+**************************************************************************************
+
+Host: sudarshan
+
+Timers On : Sat Feb 21 18:11:29 2026
+Timers Off: Sat Feb 21 18:13:41 2026
+
+Wall Time:      131.43 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+V: Grid                             :      2.000u      0.000s      0.627w     42 calls
+build grid                          :      1.333u      0.000s      0.254w     42 calls
+post-process grid                   :      0.667u      0.000s      0.369w     42 calls
+DFH: sparsity prep                  :      0.783u      0.000s      0.486w     42 calls
+Libint2ERI::Libint2ERI              :      1.050u      0.000s      0.634w    252 calls
+DFH: initialize()                   :      7.033u      0.350s      1.744w     42 calls
+DFH: AO Construction                :      3.000u      0.000s      0.448w     42 calls
+DFH: AO-Met. Contraction            :      2.183u      0.033s      0.423w     42 calls
+HF: Form core H                     :      0.167u      0.017s      0.695w     42 calls
+HF: Form S/X                        :      0.233u      0.083s      0.096w     42 calls
+HF: Guess                           :      4.217u      0.417s      2.177w     42 calls
+SAD Guess                           :      4.200u      0.417s      2.149w     42 calls
+HF: Form G                          :    703.967u      0.850s    106.994w   1071 calls
+RV: Form V                          :    681.450u      0.067s    102.902w   1071 calls
+Properties                          :    170.415p                         768207 calls
+Functional                          :     30.344p                         768207 calls
+V_xc                                :    208.136p                         768207 calls
+JK: D                               :      0.083u      0.000s      0.064w   1071 calls
+JK: USO2AO                          :      0.000u      0.000s      0.003w   1071 calls
+JK: JK                              :     22.083u      0.783s      3.874w   1071 calls
+DFH: compute_JK()                   :     22.067u      0.783s      3.849w   1071 calls
+DFH: Grabbing AOs                   :      0.000u      0.017s      0.001w   1071 calls
+DFH: compute_J                      :      8.133u      0.067s      1.301w   1071 calls
+DFH: compute_K                      :     13.333u      0.700s      2.197w   1071 calls
+JK: AO2USO                          :      0.000u      0.000s      0.001w   1071 calls
+HF: Form F                          :      0.117u      0.000s      0.042w   1071 calls
+HF: Form D                          :      0.100u      0.000s      0.024w   1071 calls
+HF: DIIS                            :      4.983u      1.250s      3.469w   1029 calls
+HF: Form C                          :      4.483u      1.467s      2.257w   1029 calls
+
+--------------------------------------------------------------------------------------
+V: Grid                             :      2.000u      0.000s      0.627w     42 calls
+| build grid                        :      1.333u      0.000s      0.254w     42 calls
+| post-process grid                 :      0.667u      0.000s      0.369w     42 calls
+DFH: sparsity prep                  :      0.783u      0.000s      0.486w     42 calls
+| Libint2ERI::Libint2ERI            :      0.433u      0.000s      0.322w     42 calls
+DFH: initialize()                   :      7.033u      0.350s      1.744w     42 calls
+| Libint2ERI::Libint2ERI            :      0.617u      0.000s      0.312w    210 calls
+| DFH: AO Construction              :      3.000u      0.000s      0.448w     42 calls
+| DFH: AO-Met. Contraction          :      2.183u      0.033s      0.423w     42 calls
+HF: Form core H                     :      0.167u      0.017s      0.695w     42 calls
+HF: Form S/X                        :      0.233u      0.083s      0.096w     42 calls
+HF: Guess                           :      4.217u      0.417s      2.177w     42 calls
+| SAD Guess                         :      4.200u      0.417s      2.149w     42 calls
+HF: Form G                          :    703.967u      0.850s    106.994w   1071 calls
+| RV: Form V                        :    681.450u      0.067s    102.902w   1071 calls
+| | Properties                      :    170.415p                         768207 calls
+| | Functional                      :     30.344p                         768207 calls
+| | V_xc                            :    208.136p                         768207 calls
+| JK: D                             :      0.083u      0.000s      0.064w   1071 calls
+| JK: USO2AO                        :      0.000u      0.000s      0.003w   1071 calls
+| JK: JK                            :     22.083u      0.783s      3.874w   1071 calls
+| | DFH: compute_JK()               :     22.067u      0.783s      3.849w   1071 calls
+| | | DFH: Grabbing AOs             :      0.000u      0.017s      0.001w   1071 calls
+| | | DFH: compute_J                :      8.133u      0.067s      1.301w   1071 calls
+| | | DFH: compute_K                :     13.333u      0.700s      2.197w   1071 calls
+| JK: AO2USO                        :      0.000u      0.000s      0.001w   1071 calls
+HF: Form F                          :      0.117u      0.000s      0.042w   1071 calls
+HF: Form D                          :      0.100u      0.000s      0.024w   1071 calls
+HF: DIIS                            :      4.983u      1.250s      3.469w   1029 calls
+HF: Form C                          :      4.483u      1.467s      2.257w   1029 calls
+
+**************************************************************************************
+
+Host: sudarshan
+
+Timers On : Sat Feb 21 18:17:01 2026
+Timers Off: Sat Feb 21 18:17:02 2026
+
+Wall Time:        0.53 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+
+--------------------------------------------------------------------------------------
+
+**************************************************************************************
