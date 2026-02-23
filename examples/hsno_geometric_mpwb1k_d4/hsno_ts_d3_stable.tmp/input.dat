@@ -1,0 +1,24 @@
+molecule hsno {
+0 1
+H           0.9350397568    -0.6168637430    -0.0000009971
+S          -0.6934304886    -0.5307960377    -0.0000499133
+N           0.0547331611     0.9043211393    -0.0000215182
+O           1.2720561179     0.6841925078     0.0000146442
+units angstrom
+no_com
+no_reorient
+symmetry c1
+}
+
+set {
+ basis def2-tzvpd
+ scf_type df
+ guess sad
+ scf_initial_accelerator ediis
+ damping_percentage 20
+ maxiter 300
+ e_convergence 1e-8
+ d_convergence 1e-8
+}
+
+gradient('mpwb1k-d3')

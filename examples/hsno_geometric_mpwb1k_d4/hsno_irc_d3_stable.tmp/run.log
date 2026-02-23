@@ -1,0 +1,7 @@
+2026-02-21:18:10:12,415 INFO     [psi4.driver.task_planner:259] PLANNING Atomic:  keywords={'DAMPING_PERCENTAGE': 20.0, 'D_CONVERGENCE': 1e-08, 'E_CONVERGENCE': 1e-08, 'GUESS': 'SAD', 'MAXITER': 300, 'SCF_INITIAL_ACCELERATOR': 'EDIIS', 'SCF_TYPE': 'DF', 'function_kwargs': {}}
+2026-02-21:18:10:12,417 INFO     [psi4.driver.driver:638] Compute gradient(): method=mpwb1k-d3, basis=def2-tzvpd, molecule=hsno, nre=98.23422375617041
+2026-02-21:18:10:16,372 INFO     [psi4.driver.driver:641] Return gradient(): -528.7277847826774
+2026-02-21:18:10:16,373 INFO     [psi4.driver.driver:642] [[-0.0001369   0.00008705 -0.00000002]
+ [ 0.00031822 -0.00011064  0.00000002]
+ [ 0.00008779  0.00027382 -0.00000002]
+ [-0.00023686 -0.00026843  0.00000002]]

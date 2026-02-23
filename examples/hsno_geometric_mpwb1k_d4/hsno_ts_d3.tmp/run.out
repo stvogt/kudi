@@ -1,0 +1,338 @@
+
+    -----------------------------------------------------------------------
+          Psi4: An Open-Source Ab Initio Electronic Structure Package
+                               Psi4 1.10 release
+
+                         Git: Rev {} zzzzzzz 
+
+
+    D. G. A. Smith, L. A. Burns, A. C. Simmonett, R. M. Parrish,
+    M. C. Schieber, R. Galvelis, P. Kraus, H. Kruse, R. Di Remigio,
+    A. Alenaizan, A. M. James, S. Lehtola, J. P. Misiewicz, M. Scheurer,
+    R. A. Shaw, J. B. Schriber, Y. Xie, Z. L. Glick, D. A. Sirianni,
+    J. S. O'Brien, J. M. Waldrop, A. Kumar, E. G. Hohenstein,
+    B. P. Pritchard, B. R. Brooks, H. F. Schaefer III, A. Yu. Sokolov,
+    K. Patkowski, A. E. DePrince III, U. Bozkaya, R. A. King,
+    F. A. Evangelista, J. M. Turney, T. D. Crawford, C. D. Sherrill,
+    J. Chem. Phys. 152(18) 184108 (2020). https://doi.org/10.1063/5.0006002
+
+                            Additional Code Authors
+    E. T. Seidl, C. L. Janssen, E. F. Valeev, M. L. Leininger,
+    J. F. Gonthier, R. M. Richard, H. R. McAlexander, M. Saitow, X. Wang,
+    P. Verma, M. H. Lechner, A. Jiang, S. Behnle, A. G. Heide,
+    M. F. Herbst, D. L. Poole, T. Győri, E. C. Mitchell, J. P. Pederson,
+    and A. M. Wallace
+
+             Previous Authors, Complete List of Code Contributors,
+                       and Citations for Specific Modules
+    https://github.com/psi4/psi4/blob/master/codemeta.json
+    https://github.com/psi4/psi4/graphs/contributors
+    https://psicode.org/psi4manual/master/introduction.html#citing-psifour
+
+    -----------------------------------------------------------------------
+
+
+    Psi4 started on: Saturday, 21 February 2026 06:01PM
+
+    Process ID: 826186
+    Host:       sudarshan
+    PSIDATADIR: /local_cache/zuse/micromamba/envs/qcfractal/share/psi4
+    Memory:     500.0 MiB
+    Threads:    12
+    Addons:     a̶d̶c̶c̶, a̶m̶b̶i̶t̶, b̶s̶e̶, c̶c̶t̶3̶, c̶f̶o̶u̶r̶, c̶h̶e̶m̶p̶s̶2̶, c̶p̶p̶e̶, d̶d̶x̶, dftd3,
+                dftd4, dkh, ecpint, einsums, f̶o̶r̶t̶e̶, g̶a̶u̶x̶c̶, gcp, g̶d̶m̶a̶, geometric,
+                g̶p̶u̶_̶d̶f̶c̶c̶, i̶n̶t̶e̶g̶r̶a̶t̶o̶r̶x̶x̶, i̶p̶i̶, l̶i̶b̶e̶f̶p̶, m̶d̶i̶,
+                m̶p̶2̶d̶, m̶r̶c̶c̶, ooo, o̶p̶e̶n̶f̶e̶r̶m̶i̶o̶n̶p̶s̶i̶4̶, pcmsolver,
+                p̶s̶i̶4̶f̶o̶c̶k̶c̶i̶, p̶s̶i̶x̶a̶s̶, r̶e̶s̶p̶, s̶i̶m̶i̶n̶t̶, s̶n̶s̶m̶p̶2̶,
+                v̶2̶r̶d̶m̶_̶c̶a̶s̶s̶c̶f̶
+
+  ==> Input File <==
+
+--------------------------------------------------------------------------
+molecule hsno {
+0 1
+H           0.9509342188    -0.6222983277    -0.0000277652
+S          -0.6784769597    -0.5448725664    -0.0000421484
+N           0.0605079035     0.8920631254    -0.0000408968
+O           1.2783137275     0.6812702693    -0.0000295284
+units angstrom
+no_com
+no_reorient
+symmetry c1
+}
+
+set {
+ basis def2-tzvpd
+ scf_type df
+ e_convergence 1e-8
+ d_convergence 1e-8
+}
+
+gradient('mpwb1k-d3')
+--------------------------------------------------------------------------
+
+Scratch directory: /tmp/
+gradient() will perform analytic gradient computation.
+   => Libint2 <=
+
+    Primary   basis highest AM E, G, H:  7, 6, 3
+    Auxiliary basis highest AM E, G, H:  7, 7, 4
+    Onebody   basis highest AM E, G, H:  -, -, -
+    Solid Harmonics ordering:            Gaussian
+
+*** tstart() called on sudarshan
+*** at Sat Feb 21 18:01:10 2026
+
+   => Loading Basis Set <=
+
+    Name: DEF2-TZVPD
+    Role: ORBITAL
+    Keyword: BASIS
+    atoms 1 entry H          line    14 file /local_cache/zuse/micromamba/envs/qcfractal/share/psi4/basis/def2-tzvpd.gbs 
+    atoms 2 entry S          line   545 file /local_cache/zuse/micromamba/envs/qcfractal/share/psi4/basis/def2-tzvpd.gbs 
+    atoms 3 entry N          line   171 file /local_cache/zuse/micromamba/envs/qcfractal/share/psi4/basis/def2-tzvpd.gbs 
+    atoms 4 entry O          line   208 file /local_cache/zuse/micromamba/envs/qcfractal/share/psi4/basis/def2-tzvpd.gbs 
+
+   => MPWB1K-D3: Empirical Dispersion <=
+
+    Grimme's -D3 (zero-damping) Dispersion Correction
+    Grimme S.; Antony J.; Ehrlich S.; Krieg H. (2010), J. Chem. Phys., 132: 154104
+    Parametrisation from:    L. Goerigk, S. Grimme, Phys. Chem. Chem. Phys. 13, 6670-6688, 2011
+
+        s6 =       1.000000
+        s8 =       1.061000
+       sr6 =       1.671000
+    alpha6 =      14.000000
+       sr8 =       1.000000
+
+
+         ---------------------------------------------------------
+                                   SCF
+               by Justin Turney, Rob Parrish, Andy Simmonett
+                          and Daniel G. A. Smith
+                              RKS Reference
+                       12 Threads,    500 MiB Core
+         ---------------------------------------------------------
+
+  ==> Geometry <==
+
+    Molecular point group: c1
+    Full point group: C1
+
+    Geometry (in Angstrom), charge = 0, multiplicity = 1:
+
+       Center              X                  Y                   Z               Mass       
+    ------------   -----------------  -----------------  -----------------  -----------------
+         H            0.950934218800    -0.622298327700    -0.000027765200     1.007825032230
+         S           -0.678476959700    -0.544872566400    -0.000042148400    31.972071174400
+         N            0.060507903500     0.892063125400    -0.000040896800    14.003074004430
+         O            1.278313727500     0.681270269300    -0.000029528400    15.994914619570
+
+  Running in c1 symmetry.
+
+  Rotational constants: A =      2.01249  B =      0.27238  C =      0.23991 [cm^-1]
+  Rotational constants: A =  60332.96505  B =   8165.72277  C =   7192.28767 [MHz]
+  Nuclear repulsion =  100.438119625403800
+
+  Charge       = 0
+  Multiplicity = 1
+  Electrons    = 32
+  Nalpha       = 16
+  Nbeta        = 16
+
+  ==> Algorithm <==
+
+  SCF Algorithm Type is DF.
+  DIIS enabled.
+  MOM disabled.
+  Fractional occupation disabled.
+  Guess Type is SAD.
+  Energy threshold   = 1.00e-08
+  Density threshold  = 1.00e-08
+  Integral threshold = 1.00e-12
+
+  ==> Primary Basis <==
+
+  Basis Set: DEF2-TZVPD
+    Blend: DEF2-TZVPD
+    Number of shells: 48
+    Number of basis functions: 132
+    Number of Cartesian functions: 150
+    Spherical Harmonics?: true
+    Max angular momentum: 3
+
+  ==> DFT Potential <==
+
+   => LibXC <=
+
+    Version 7.0.0
+    S. Lehtola, C. Steigemann, M. J.T. Oliveira, and M. A.L. Marques.,  SoftwareX 7, 1–5 (2018) (10.1016/j.softx.2017.11.002)
+
+   => Composite Functional: MPWB1K-D3ZERO2B <= 
+
+    mPWB1K-d3zero2b Hyb-GGA Exchange-Correlation Functional
+
+    Y. Zhao and D. G. Truhlar.,  J. Phys. Chem. A 108, 6908 (2004) (10.1021/jp048147q)
+
+    Deriv               =              1
+    GGA                 =           TRUE
+    Meta                =           TRUE
+
+    Exchange Hybrid     =           TRUE
+    MP2 Hybrid          =          FALSE
+
+   => Exchange Functionals <=
+
+    0.5600   mPW91 of Adamo & Barone
+
+   => Exact (HF) Exchange <=
+
+    0.4400               HF 
+
+   => Correlation Functionals <=
+
+    1.0000   Becke correlation 95
+
+   => LibXC Density Thresholds  <==
+
+    XC_HYB_MGGA_XC_MPWB1K:  1.00E-14 
+
+   => Molecular Quadrature <=
+
+    Radial Scheme          =       TREUTLER
+    Pruning Scheme         =           NONE
+    Nuclear Scheme         =       TREUTLER
+
+    Blocking Scheme        =         OCTREE
+    BS radius alpha        =              1
+    Pruning alpha          =              1
+    Radial Points          =             75
+    Spherical Points       =            302
+    Total Points           =          88381
+    Total Blocks           =            720
+    Max Points             =            256
+    Max Functions          =            130
+    Weights Tolerance      =       1.00E-15
+
+   => Loading Basis Set <=
+
+    Name: (DEF2-TZVPD AUX)
+    Role: JKFIT
+    Keyword: DF_BASIS_SCF
+    atoms 1 entry H          line    18 file /local_cache/zuse/micromamba/envs/qcfractal/share/psi4/basis/def2-universal-jkfit.gbs 
+    atoms 2 entry S          line   903 file /local_cache/zuse/micromamba/envs/qcfractal/share/psi4/basis/def2-universal-jkfit.gbs 
+    atoms 3 entry N          line   258 file /local_cache/zuse/micromamba/envs/qcfractal/share/psi4/basis/def2-universal-jkfit.gbs 
+    atoms 4 entry O          line   318 file /local_cache/zuse/micromamba/envs/qcfractal/share/psi4/basis/def2-universal-jkfit.gbs 
+
+  ==> Integral Setup <==
+
+  DFHelper Memory: AOs need 0.044 GiB; user supplied 0.044 GiB. 
+  SCF_SUBTYPE=INCORE selected. In-core MEM_DF algorithm will be used.
+  Using in-core AOs.
+
+  ==> MemDFJK: Density-Fitted J/K Matrices <==
+
+    J tasked:                   Yes
+    K tasked:                   Yes
+    wK tasked:                   No
+    OpenMP threads:              12
+    Memory [MiB]:                45
+    Algorithm:                 Core
+    Schwarz Cutoff:           1E-12
+    Mask sparsity (%):       0.4821
+    Fitting Condition:        1E-10
+
+   => Auxiliary Basis Set <=
+
+  Basis Set: (DEF2-TZVPD AUX)
+    Blend: DEF2-UNIVERSAL-JKFIT
+    Number of shells: 94
+    Number of basis functions: 300
+    Number of Cartesian functions: 361
+    Spherical Harmonics?: true
+    Max angular momentum: 4
+
+  Cached 33.3% of DFT collocation blocks in 0.249 [GiB].
+
+  Minimum eigenvalue in the overlap matrix is 2.1698623590E-04.
+  Reciprocal condition number of the overlap matrix is 2.6022004411E-05.
+    Using symmetric orthogonalization.
+
+  ==> Pre-Iterations <==
+
+  SCF Guess: Superposition of Atomic Densities via on-the-fly atomic UHF (no occupation information).
+
+   -------------------------
+    Irrep   Nso     Nmo    
+   -------------------------
+     A        132     132 
+   -------------------------
+    Total     132     132
+   -------------------------
+
+  ==> Iterations <==
+
+                           Total Energy        Delta E     RMS |[F,P]|
+
+   @DF-RKS iter SAD:  -529.74834462752074   -5.29748e+02   0.00000e+00 
+   @DF-RKS iter   1:  -520.62584793705344    9.12250e+00   2.00171e-02 ADIIS/DIIS
+   @DF-RKS iter   2:  -516.40682772528476    4.21902e+00   3.73593e-02 ADIIS/DIIS
+   @DF-RKS iter   3:  -525.88092973542621   -9.47410e+00   1.22476e-02 ADIIS/DIIS
+   @DF-RKS iter   4:  -525.58547518748105    2.95455e-01   1.32640e-02 ADIIS/DIIS
+
+Traceback (most recent call last):
+  File "/local_cache/zuse/micromamba/envs/qcfractal/bin/psi4", line 388, in <module>
+    exec(content)
+  File "<string>", line 29, in <module>
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/driver.py", line 640, in gradient
+    wfn = procedures['gradient'][lowername](lowername, molecule=molecule, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/proc.py", line 96, in select_scf_gradient
+    return func(name, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/proc.py", line 2690, in run_scf_gradient
+    ref_wfn = run_scf(name, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/proc.py", line 2590, in run_scf
+    scf_wfn = scf_helper(name, post_scf=False, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/proc.py", line 1877, in scf_helper
+    e_scf = scf_wfn.compute_energy()
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/scf_proc/scf_iterator.py", line 86, in scf_compute_energy
+    self.iterations()
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/scf_proc/scf_iterator.py", line 501, in scf_iterate
+    for engine_used in self.diis(Dnorm):
+                       ^^^^^^^^^^^^^^^^
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/scf_proc/subclass_methods.py", line 118, in _RHF_diis
+    return self.diis_manager_.extrapolate(self.Fa(), Dnorm=Dnorm)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/diis.py", line 409, in extrapolate
+    coeffs = m * initial_coefficient_function() + (1 - m) * self.diis_coefficients()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/local_cache/zuse/micromamba/envs/qcfractal/lib/python3.11/site-packages/psi4/driver/procrouting/diis.py", line 290, in adiis_coefficients
+    raise Exception("ADIIS minimization failed. File a bug, and include your entire input and output files.")
+
+Exception: ADIIS minimization failed. File a bug, and include your entire input and output files.
+
+
+Printing out the relevant lines from the Psithon --> Python processed input file:
+    core.IO.set_default_namespace("hsno")
+    core.set_global_option("BASIS", "def2-tzvpd")
+    core.set_global_option("SCF_TYPE", "df")
+    core.set_global_option("E_CONVERGENCE", 1e-8)
+    core.set_global_option("D_CONVERGENCE", 1e-8)
+--> gradient('mpwb1k-d3')
+
+!----------------------------------------------------------------------------------!
+!                                                                                  !
+!  ADIIS minimization failed. File a bug, and include your entire input and output !
+!     files.                                                                       !
+!                                                                                  !
+!----------------------------------------------------------------------------------!
+
+    Psi4 stopped on: Saturday, 21 February 2026 06:01PM
+    Psi4 wall time for execution: 0:00:01.22
+
+*** Psi4 encountered an error. Buy a developer more coffee!
+*** Resources and help at github.com/psi4/psi4.
