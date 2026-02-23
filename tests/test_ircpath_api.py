@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from kudi import IRCPath
+from kudi.models import Atom, Geometry, IrcPoint
 
 
 def test_from_file_builds_points(irc_fixture_path):
@@ -81,3 +82,46 @@ def test_flux_outputs_align(irc_path_obj):
     assert len(result["reaction_coordinate"]) == len(irc_path_obj.points)
     assert len(result["flux"]) == len(irc_path_obj.points)
     assert result["flux"].dtype.kind in {"f"}
+
+
+def test_from_file_supports_geometric_xyz_format():
+    path = IRCPath.from_file("tests/fixtures/geometric_irc.xyz", format="geometric_xyz", strict=True)
+    assert len(path.points) == 3
+    assert path.points[0].energy_hartree == pytest.approx(-1.1)
+    assert path.rx_coords[0] == pytest.approx(0.0)
+
+
+def test_from_file_auto_detects_geometric_xyz():
+    path = IRCPath.from_file("tests/fixtures/geometric_irc.xyz", format="auto", strict=True)
+    assert len(path.points) == 3
+
+
+def test_to_qcel_molecule_calls_bridge(monkeypatch):
+    path = IRCPath(
+        path="dummy.log",
+        points=[
+            IrcPoint(
+                rx_coord=0.0,
+                energy_hartree=-1.0,
+                geometry=Geometry(atoms=[Atom(symbol="H", x=0.0, y=0.0, z=0.0)]),
+            )
+        ],
+    )
+
+    called = {}
+
+    def fake_molecule_from_irc_point(point, *, charge, multiplicity):
+        called["point"] = point
+        called["charge"] = charge
+        called["multiplicity"] = multiplicity
+        return "fake-molecule"
+
+    import kudi.qcfractal.molecules as qcf_molecules
+
+    monkeypatch.setattr(qcf_molecules, "molecule_from_irc_point", fake_molecule_from_irc_point)
+    result = path.to_qcel_molecule(0, charge=-1, multiplicity=2)
+
+    assert result == "fake-molecule"
+    assert called["point"] is path.points[0]
+    assert called["charge"] == -1
+    assert called["multiplicity"] == 2

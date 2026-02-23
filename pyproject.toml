@@ -25,6 +25,11 @@ notebook = [
     "ipykernel>=6",
     "matplotlib>=3",
 ]
+qcfractal = [
+    "qcportal>=0.59",
+    "qcelemental>=0.26",
+    "pyyaml>=6",
+]
 test = ["numpy>=1.23"]
 
 [tool.setuptools]
